@@ -33,19 +33,46 @@
 </head>
 <body>
     <h1>YouTube Video List</h1>
-    <ul class="video-list">
-        <li class="video-item">
-            <div class="video-title">Video Title 1</div>
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allowfullscreen></iframe>
-        </li>
-        <li class="video-item">
-            <div class="video-title">Video Title 2</div>
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allowfullscreen></iframe>
-        </li>
-        <li class="video-item">
-            <div class="video-title">Video Title 3</div>
-            <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" frameborder="0" allowfullscreen></iframe>
-        </li>
+    <ul class="video-list" id="videoList">
+        <!-- Videos will be dynamically loaded here -->
     </ul>
+
+    <script>
+        // Function to fetch video data
+        function getFTCvideos() {
+            return [
+                { title: "Video Title 1", videoId: "VIDEO_ID_1" },
+                { title: "Video Title 2", videoId: "VIDEO_ID_2" },
+                { title: "Video Title 3", videoId: "VIDEO_ID_3" }
+            ];
+        }
+
+        // Function to render videos in the list
+        function renderVideos() {
+            const videoList = document.getElementById('videoList');
+            const videos = getFTCvideos();
+
+            videos.forEach(video => {
+                const listItem = document.createElement('li');
+                listItem.className = 'video-item';
+
+                const title = document.createElement('div');
+                title.className = 'video-title';
+                title.textContent = video.title;
+
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${video.videoId}`;
+                iframe.frameBorder = "0";
+                iframe.allowFullscreen = true;
+
+                listItem.appendChild(title);
+                listItem.appendChild(iframe);
+                videoList.appendChild(listItem);
+            });
+        }
+
+        // Load videos when the page loads
+        window.onload = renderVideos;
+    </script>
 </body>
 </html>
