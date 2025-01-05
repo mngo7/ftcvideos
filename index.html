@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video List</title>
+    <title>FTC Video List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,39 +29,97 @@
             height: 315px;
             max-width: 100%;
         }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        .search-button {
+            padding: 8px 15px;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>YouTube Video List</h1>
+    <h1>FTC Video List</h1>
+    <div class="search-container">
+        <input type="text" id="teamSearch" class="search-input" placeholder="Enter team number...">
+        <button id="searchButton" class="search-button">Search</button>
+    </div>
     <ul class="video-list" id="videoList">
         <!-- Videos will be dynamically loaded here -->
     </ul>
 
     <script>
+        let videosData = [];
+
         // Function to fetch and render video data
         function fetchAndRenderVideos() {
             $.getJSON('https://ftcvideos.pystem.com/list', function(data) {
-                const videoList = $('#videoList');
-                
-                data.forEach(video => {
-                    const listItem = $('<li></li>').addClass('video-item');
-                    const title = $('<div></div>').addClass('video-title').text(video.video_file) || `Video Title`);
-                    const iframe = $('<iframe></iframe>')
-                        .attr('src', `https://www.youtube.com/embed/${video.video_id}`)
-                        .attr('frameborder', '0')
-                        .attr('allowfullscreen', true);
-
-                    listItem.append(title, iframe);
-                    videoList.append(listItem);
-                });
+                videosData = data; // Store data for reuse in search
             }).fail(function() {
                 console.error('Failed to fetch video data');
             });
         }
 
+        // Function to render videos based on a team number filter
+        function renderVideos(teamNumber) {
+            const videoList = $('#videoList');
+            videoList.empty(); // Clear current list
+
+            if (!teamNumber) {
+                const message = $('<div></div>').text('Please enter a team number to view videos.');
+                videoList.append(message);
+                return;
+            }
+
+            videosData.forEach(video => {
+                const matchingMatches = video.ftc_matches.filter(match =>
+                    match.blue_teams.includes(teamNumber) || match.red_teams.includes(teamNumber)
+                );
+
+                if (matchingMatches.length > 0) {
+                    const cleanedTitle = video.video_file.replace(/\.[^/.]+$/, ''); // Remove file extension
+                    const cleanedTitle2 = cleanedTitle.replace(/\.[^/.]+$/, ''); // Remove file extension
+
+                    matchingMatches.forEach(match => {
+                        const listItem = $('<li></li>').addClass('video-item');
+                        const title = $('<div></div>').addClass('video-title').text(cleanedTitle2);
+
+                        const startTime = match.start_time;
+                        const endTime = match.end_time;
+
+                        const iframe = $('<iframe></iframe>')
+                            .attr('src', `https://www.youtube.com/embed/${video.video_id}?start=${startTime}&end=${endTime}`)
+                            .attr('frameborder', '0')
+                            .attr('allowfullscreen', true);
+
+                        listItem.append(title, iframe);
+                        videoList.append(listItem);
+                    });
+                }
+            });
+
+            if (videoList.children().length === 0) {
+                const noResults = $('<div></div>').text('No videos found for the entered team number.');
+                videoList.append(noResults);
+            }
+        }
+
+        // Event listener for search
+        $(document).on('click', '#searchButton', function() {
+            const teamNumber = $('#teamSearch').val().trim();
+            renderVideos(teamNumber);
+        });
+
         // Load videos when the page loads
-        $(document).ready(fetchAndRenderVideos);
+        $(document).ready(function() {
+            fetchAndRenderVideos();
+        });
     </script>
 </body>
 </html>
