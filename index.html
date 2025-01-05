@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .video-list {
+            list-style: none;
+            padding: 0;
+        }
+        .video-item {
+            margin: 20px 0;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        iframe {
+            width: 560px;
+            height: 315px;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Video List</h1>
+    <ul class="video-list">
+        <li class="video-item">
+            <div class="video-title">Video Title 1</div>
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" frameborder="0" allowfullscreen></iframe>
+        </li>
+        <li class="video-item">
+            <div class="video-title">Video Title 2</div>
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" frameborder="0" allowfullscreen></iframe>
+        </li>
+        <li class="video-item">
+            <div class="video-title">Video Title 3</div>
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" frameborder="0" allowfullscreen></iframe>
+        </li>
+    </ul>
+</body>
+</html>
