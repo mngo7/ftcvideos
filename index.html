@@ -46,7 +46,7 @@
                 
                 data.forEach(video => {
                     const listItem = $('<li></li>').addClass('video-item');
-                    const title = $('<div></div>').addClass('video-title').text(video.video_info || `Video ID: ${video.video_id}`);
+                    const title = $('<div></div>').addClass('video-title').text(video.video_file) || `Video Title`);
                     const iframe = $('<iframe></iframe>')
                         .attr('src', `https://www.youtube.com/embed/${video.video_id}`)
                         .attr('frameborder', '0')
