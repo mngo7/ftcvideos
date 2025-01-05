@@ -30,6 +30,7 @@
             max-width: 100%;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>YouTube Video List</h1>
@@ -38,41 +39,29 @@
     </ul>
 
     <script>
-        // Function to fetch video data
-        function getFTCvideos() {
-            return [
-                { title: "Video Title 1", videoId: "VIDEO_ID_1" },
-                { title: "Video Title 2", videoId: "VIDEO_ID_2" },
-                { title: "Video Title 3", videoId: "VIDEO_ID_3" }
-            ];
-        }
+        // Function to fetch and render video data
+        function fetchAndRenderVideos() {
+            $.getJSON('https://ftcvideos.pystem.com/list', function(data) {
+                const videoList = $('#videoList');
+                
+                data.forEach(video => {
+                    const listItem = $('<li></li>').addClass('video-item');
+                    const title = $('<div></div>').addClass('video-title').text(video.video_info || `Video ID: ${video.video_id}`);
+                    const iframe = $('<iframe></iframe>')
+                        .attr('src', `https://www.youtube.com/embed/${video.video_id}`)
+                        .attr('frameborder', '0')
+                        .attr('allowfullscreen', true);
 
-        // Function to render videos in the list
-        function renderVideos() {
-            const videoList = document.getElementById('videoList');
-            const videos = getFTCvideos();
-
-            videos.forEach(video => {
-                const listItem = document.createElement('li');
-                listItem.className = 'video-item';
-
-                const title = document.createElement('div');
-                title.className = 'video-title';
-                title.textContent = video.title;
-
-                const iframe = document.createElement('iframe');
-                iframe.src = `https://www.youtube.com/embed/${video.videoId}`;
-                iframe.frameBorder = "0";
-                iframe.allowFullscreen = true;
-
-                listItem.appendChild(title);
-                listItem.appendChild(iframe);
-                videoList.appendChild(listItem);
+                    listItem.append(title, iframe);
+                    videoList.append(listItem);
+                });
+            }).fail(function() {
+                console.error('Failed to fetch video data');
             });
         }
 
         // Load videos when the page loads
-        window.onload = renderVideos;
+        $(document).ready(fetchAndRenderVideos);
     </script>
 </body>
 </html>
