@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top FTC Matches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .video-list {
+            list-style: none;
+            padding: 0;
+        }
+        .video-item {
+            margin: 20px 0;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        iframe {
+            width: 560px;
+            height: 315px;
+            max-width: 100%;
+        }
+        .nav-button {
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Top FTC Matches</h1>
+    <div class="nav-button">
+        <a href="index.html"><button class="search-button">Back to Home</button></a>
+    </div>
+    <ul class="video-list" id="videoList">
+        <!-- Top matches will be dynamically loaded here -->
+    </ul>
+
+    <script>
+        $(document).ready(function() {
+            const apiEndpoint = 'https://ftc-api.firstinspires.org/v2.0/matches';
+            const username = 'mngo7';
+            const token = '84C89478-9952-4AE6-B388-2FEFEF9C74ED';
+
+            // Fetch match data
+            fetch(apiEndpoint, {
+                headers: {
+                    'Authorization': 'Basic ' + btoa(`${username}:${token}`),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const videoList = $('#videoList');
+                const matches = data.matches;
+
+                // Find top 3 scoring matches
+                const topMatches = matches.sort((a, b) => {
+                    const scoreA = a.red_score + a.blue_score;
+                    const scoreB = b.red_score + b.blue_score;
+                    return scoreB - scoreA; // Sort descending by score
+                }).slice(0, 3);
+
+                topMatches.forEach(match => {
+                    const redTeams = match.red_teams.join(', ');
+                    const blueTeams = match.blue_teams.join(', ');
+                    const combinedScore = match.red_score + match.blue_score;
+                    const title = `Match ${match.match_number}: ${match.event_name} (Red: ${redTeams}, Blue: ${blueTeams}, Combined Score: ${combinedScore})`;
+
+                    const listItem = $('<li></li>').addClass('video-item');
+                    const videoTitle = $('<div></div>').addClass('video-title').text(title);
+
+                    // Assuming video links are included in the API response
+                    const iframe = $('<iframe></iframe>')
+                        .attr('src', `https://www.youtube.com/embed/${match.video_id}?start=${match.start_time || 0}`)
+                        .attr('frameborder', '0')
+                        .attr('allowfullscreen', true);
+
+                    listItem.append(videoTitle, iframe);
+                    videoList.append(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                const videoList = $('#videoList');
+                const errorMessage = $('<div></div>').text('Failed to load top matches. Please try again later.');
+                videoList.append(errorMessage);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best FTC Matches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .video-list {
+            list-style: none;
+            padding: 0;
+        }
+        .video-item {
+            margin: 20px 0;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        iframe {
+            width: 560px;
+            height: 315px;
+            max-width: 100%;
+        }
+        .nav-button {
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Best FTC Matches</h1>
+    <div class="nav-button">
+        <a href="index.html"><button class="search-button">Back to Home</button></a>
+    </div>
+    <ul class="video-list" id="videoList">
+        <!-- Best matches will be dynamically loaded here -->
+    </ul>
+
+    <script>
+        $(document).ready(function() {
+            const matchQueries = [
+                ['17077', '24131', '21229', '23270'],
+                ['20936', '19044', '19043', '22017'],
+                ['10644', '11228', '10255', '8533']
+            ];
+
+            const videoList = $('#videoList');
+
+            function fetchAndRenderVideos() {
+                $.getJSON('https://ftcvideos.pystem.com/list', function(videosData) {
+                    matchQueries.forEach((teams, index) => {
+                        const matches = searchVideosByTeams(videosData, teams);
+
+                        if (matches.length === 0) {
+                            const noMatchMessage = $('<li></li>').addClass('video-item').text(`No matches found for: ${teams.join(', ')}`);
+                            videoList.append(noMatchMessage);
+                            return;
+                        }
+
+                        matches.forEach(match => {
+                            const cleanedTitle = match.title.replace(/\.mp4$/, '');
+                            const listItem = $('<li></li>').addClass('video-item');
+                            const videoTitle = $('<div></div>').addClass('video-title').text(cleanedTitle);
+
+                            const iframe = $('<iframe></iframe>')
+                                .attr('src', `https://www.youtube.com/embed/${match.videoId}?start=${match.startTime}`)
+                                .attr('frameborder', '0')
+                                .attr('allowfullscreen', true);
+
+                            listItem.append(videoTitle, iframe);
+                            videoList.append(listItem);
+                        });
+                    });
+                }).fail(function() {
+                    console.error('Failed to fetch video data');
+                    const errorMessage = $('<div></div>').text('Failed to load best matches. Please try again later.');
+                    videoList.append(errorMessage);
+                });
+            }
+
+            function searchVideosByTeams(videosData, teams) {
+                const filteredVideos = [];
+
+                videosData.forEach(video => {
+                    video.ftc_matches.forEach(match => {
+                        const allTeams = [...match.red_teams, ...match.blue_teams];
+                        if (teams.every(team => allTeams.includes(team))) {
+                            filteredVideos.push({
+                                videoId: video.video_id,
+                                title: video.video_file.replace(/Query \d+:\s*/, ''),
+                                startTime: match.start_time
+                            });
+                        }
+                    });
+                });
+
+                return filteredVideos;
+            }
+
+            fetchAndRenderVideos();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest FTC Matches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .video-list {
+            list-style: none;
+            padding: 0;
+        }
+        .video-item {
+            margin: 20px 0;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        iframe {
+            width: 560px;
+            height: 315px;
+            max-width: 100%;
+        }
+        .nav-button {
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Latest FTC Matches</h1>
+    <div class="nav-button">
+        <a href="index.html"><button class="search-button">Back to Home</button></a>
+    </div>
+    <ul class="video-list" id="videoList">
+        <!-- Latest videos will be dynamically loaded here -->
+    </ul>
+
+    <script>
+        $(document).ready(function() {
+            $.getJSON('https://ftcvideos.pystem.com/list', function(data) {
+                const videoList = $('#videoList');
+                const latestMatches = [];
+
+                // Extract the two latest tournaments
+                const latestTournaments = data.slice(0, 2); // Get the two latest tournaments
+
+                latestTournaments.forEach(tournament => {
+                    const matches = tournament.ftc_matches.slice(0, 2); // Get the two latest matches of each tournament
+                    matches.forEach(match => {
+                        const redTeams = match.red_teams.join(', ');
+                        const blueTeams = match.blue_teams.join(', ');
+                        const title = `${tournament.video_file.replace(/\.[^/.]+$/, '')} (Red: ${redTeams}, Blue: ${blueTeams})`;
+
+                        latestMatches.push({
+                            title,
+                            videoId: tournament.video_id,
+                            startTime: match.start_time
+                        });
+                    });
+                });
+
+                latestMatches.forEach(video => {
+                    const listItem = $('<li></li>').addClass('video-item');
+                    const videoTitle = $('<div></div>').addClass('video-title').text(video.title);
+
+                    const iframe = $('<iframe></iframe>')
+                        .attr('src', `https://www.youtube.com/embed/${video.videoId}?start=${video.startTime}`)
+                        .attr('frameborder', '0')
+                        .attr('allowfullscreen', true);
+
+                    listItem.append(videoTitle, iframe);
+                    videoList.append(listItem);
+                });
+            }).fail(function() {
+                console.error('Failed to fetch video data');
+            });
+        });
+    </script>
+</body>
+</html>

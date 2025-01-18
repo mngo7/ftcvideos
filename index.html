@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTC Video List</title>
+    <title>FTC Match Videos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,79 +41,190 @@
         .search-button {
             padding: 8px 15px;
         }
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+        .pagination button.active {
+            background-color: green;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: default;
+        }
+        .nav-button {
+            text-align: center;
+            margin: 20px;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>FTC Video List</h1>
+    <h1>FTC Match Videos</h1>
+    <div class="nav-button">
+        <a href="latest_matches.html"><button class="search-button">View Latest Matches</button></a>
+    </div>
+    <div class="nav-button">
+        <a href="best_matches.html"><button class="search-button">View Top Matches</button></a>
+    </div>
     <div class="search-container">
-        <input type="text" id="teamSearch" class="search-input" placeholder="Enter team number...">
+        <input type="text" id="teamOrVideoSearch" class="search-input" placeholder="Enter team numbers or video ID...">
         <button id="searchButton" class="search-button">Search</button>
     </div>
+    <div class="pagination" id="topPagination"></div>
     <ul class="video-list" id="videoList">
         <!-- Videos will be dynamically loaded here -->
     </ul>
+    <div class="pagination" id="bottomPagination"></div>
 
     <script>
         let videosData = [];
+        let currentPage = 1;
+        const videosPerPage = 5;
 
         // Function to fetch and render video data
         function fetchAndRenderVideos() {
             $.getJSON('https://ftcvideos.pystem.com/list', function(data) {
                 videosData = data; // Store data for reuse in search
+
+                // Check URL for parameters on load
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchParam = urlParams.get('search');
+                const pageParam = parseInt(urlParams.get('page')) || 1;
+
+                if (searchParam) {
+                    const searchInput = decodeURIComponent(searchParam);
+                    $('#teamOrVideoSearch').val(searchInput);
+                    currentPage = pageParam;
+                    renderVideos(searchInput);
+                }
             }).fail(function() {
                 console.error('Failed to fetch video data');
             });
         }
 
-        // Function to render videos based on a team number filter
-        function renderVideos(teamNumber) {
+        // Function to render videos based on team numbers or video ID filter
+        function renderVideos(searchInput) {
             const videoList = $('#videoList');
             videoList.empty(); // Clear current list
 
-            if (!teamNumber) {
-                const message = $('<div></div>').text('Please enter a team number to view videos.');
+            if (!searchInput) {
+                const message = $('<div></div>').text('Please enter team numbers or a video ID to view videos.');
                 videoList.append(message);
                 return;
             }
 
-            videosData.forEach(video => {
-                const matchingMatches = video.ftc_matches.filter(match =>
-                    match.blue_teams.includes(teamNumber) || match.red_teams.includes(teamNumber)
-                );
+            let filteredVideos = [];
 
-                if (matchingMatches.length > 0) {
-                    const cleanedTitle = video.video_file.replace(/\.[^/.]+$/, ''); // Remove file extension
-                    const cleanedTitle2 = cleanedTitle.replace(/\.[^/.]+$/, ''); // Remove file extension
+            if (searchInput.match(/^[a-zA-Z0-9_-]{11}$/)) {
+                // Search by video ID
+                const video = videosData.find(video => video.video_id === searchInput);
+                if (video) {
+                    video.ftc_matches.forEach(match => {
+                        const redTeams = match.red_teams.join(', ');
+                        const blueTeams = match.blue_teams.join(', ');
+                        const title = `${video.video_file.replace(/\.[^/.]+$/, '')} (Red: ${redTeams}, Blue: ${blueTeams})`;
 
-                    matchingMatches.forEach(match => {
-                        const listItem = $('<li></li>').addClass('video-item');
-                        const title = $('<div></div>').addClass('video-title').text(cleanedTitle2);
-
-                        const startTime = match.start_time;
-                        const endTime = match.end_time;
-
-                        const iframe = $('<iframe></iframe>')
-                            .attr('src', `https://www.youtube.com/embed/${video.video_id}?start=${startTime}&end=${endTime}`)
-                            .attr('frameborder', '0')
-                            .attr('allowfullscreen', true);
-
-                        listItem.append(title, iframe);
-                        videoList.append(listItem);
+                        filteredVideos.push({
+                            title,
+                            videoId: video.video_id,
+                            startTime: match.start_time
+                        });
                     });
                 }
+            } else {
+                // Search by team numbers
+                const teamNumbers = searchInput.split(/[ ,]+/).map(num => num.trim());
+
+                videosData.forEach(video => {
+                    const matchingMatches = video.ftc_matches.filter(match =>
+                        teamNumbers.every(team => match.blue_teams.includes(team) || match.red_teams.includes(team))
+                    );
+
+                    if (matchingMatches.length > 0) {
+                        const cleanedTitle = video.video_file.replace(/\.[^/.]+$/, '');
+
+                        matchingMatches.forEach(match => {
+                            const redTeams = match.red_teams.join(', ');
+                            const blueTeams = match.blue_teams.join(', ');
+                            const titleWithTeams = `${cleanedTitle} (Red: ${redTeams}, Blue: ${blueTeams})`;
+
+                            filteredVideos.push({
+                                title: titleWithTeams,
+                                videoId: video.video_id,
+                                startTime: match.start_time
+                            });
+                        });
+                    }
+                });
+            }
+
+            // Update URL with the search query and page number
+            const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchInput)}&page=${currentPage}`;
+            window.history.pushState(null, '', newUrl);
+
+            // Paginate results
+            const totalVideos = filteredVideos.length;
+            const totalPages = Math.ceil(totalVideos / videosPerPage);
+            const startIndex = (currentPage - 1) * videosPerPage;
+            const endIndex = startIndex + videosPerPage;
+            const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
+
+            paginatedVideos.forEach(video => {
+                const listItem = $('<li></li>').addClass('video-item');
+                const title = $('<div></div>').addClass('video-title').text(video.title);
+
+                const iframe = $('<iframe></iframe>')
+                    .attr('src', `https://www.youtube.com/embed/${video.videoId}?start=${video.startTime}`)
+                    .attr('frameborder', '0')
+                    .attr('allowfullscreen', true);
+
+                listItem.append(title, iframe);
+                videoList.append(listItem);
             });
 
             if (videoList.children().length === 0) {
-                const noResults = $('<div></div>').text('No videos found for the entered team number.');
+                const noResults = $('<div></div>').text('No videos found for the entered search.');
                 videoList.append(noResults);
+            }
+
+            renderPagination(totalPages);
+        }
+
+        // Function to render pagination controls
+        function renderPagination(totalPages) {
+            const paginationTop = $('#topPagination');
+            const paginationBottom = $('#bottomPagination');
+            paginationTop.empty();
+            paginationBottom.empty();
+
+            if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                    const button = $('<button></button>')
+                        .text(i)
+                        .addClass('page-button')
+                        .toggleClass('active', i === currentPage)
+                        .on('click', function() {
+                            currentPage = i;
+                            const searchInput = $('#teamOrVideoSearch').val().trim();
+                            renderVideos(searchInput);
+                        });
+
+                    paginationTop.append(button.clone(true));
+                    paginationBottom.append(button);
+                }
             }
         }
 
-        // Event listener for search
+        // Event listener for search button
         $(document).on('click', '#searchButton', function() {
-            const teamNumber = $('#teamSearch').val().trim();
-            renderVideos(teamNumber);
+            const searchInput = $('#teamOrVideoSearch').val().trim();
+            currentPage = 1; // Reset to first page on new search
+            renderVideos(searchInput);
         });
 
         // Load videos when the page loads
