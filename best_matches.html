@@ -81,18 +81,25 @@
                     $.getJSON('https://ftcvideos.pystem.com/list', function(videosData) {
                         topMatches.forEach(match => {
                             const teamNumbers = match.teams.map(team => team.teamNumber.toString());
-                            const matchingVideos = videosData.filter(video =>
-                                video.ftc_matches.some(videoMatch =>
-                                    teamNumbers.every(team => videoMatch.red_teams.includes(team) || videoMatch.blue_teams.includes(team))
-                                )
-                            );
-
-                            if (matchingVideos.length > 0) {
-                                const video = matchingVideos[0];
+                            
+                            let bestVideo = null;
+                            let bestMatch = null;
+                            
+                            videosData.forEach(video => {
+                                video.ftc_matches.forEach(videoMatch => {
+                                    const allTeams = [...videoMatch.red_teams, ...videoMatch.blue_teams];
+                                    if (teamNumbers.every(team => allTeams.includes(team))) {
+                                        bestVideo = video;
+                                        bestMatch = videoMatch;
+                                    }
+                                });
+                            });
+                            
+                            if (bestVideo && bestMatch) {
                                 const teamNumbersText = match.teams.map(team => team.teamNumber).join(', ');
                                 const videoTitle = $('<div></div>').addClass('video-title').text(`Match: ${match.description} - Teams: ${teamNumbersText} - Total Score: ${match.totalScore}`);
                                 const iframe = $('<iframe></iframe>')
-                                    .attr('src', `https://www.youtube.com/embed/${video.video_id}?start=${video.ftc_matches[0].start_time}`)
+                                    .attr('src', `https://www.youtube.com/embed/${bestVideo.video_id}?start=${bestMatch.start_time}`)
                                     .attr('frameborder', '0')
                                     .attr('allowfullscreen', true);
                                 const listItem = $('<li></li>').addClass('video-item').append(videoTitle, iframe);
