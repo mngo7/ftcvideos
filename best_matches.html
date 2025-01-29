@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Best FTC Matches</title>
+    <title>Top Scoring FTC Matches</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,76 +37,78 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Best FTC Matches</h1>
+    <h1>Top Scoring FTC Matches</h1>
     <div class="nav-button">
         <a href="index.html"><button class="search-button">Back to Home</button></a>
     </div>
     <ul class="video-list" id="videoList">
-        <!-- Best matches will be dynamically loaded here -->
+        <!-- Top matches will be dynamically loaded here -->
     </ul>
 
     <script>
         $(document).ready(function() {
-            const matchQueries = [
-                ['17077', '24131', '21229', '23270'],
-                ['20936', '19044', '19043', '22017'],
-                ['10644', '11228', '10255', '8533']
-            ];
-
             const videoList = $('#videoList');
 
-            function fetchAndRenderVideos() {
-                $.getJSON('https://ftcvideos.pystem.com/list', function(videosData) {
-                    matchQueries.forEach((teams, index) => {
-                        const matches = searchVideosByTeams(videosData, teams);
+            function fetchAndRenderTopMatches() {
+                $.getJSON('https://ftcvideos.org/matches', function(eventsData) {
+                    let topMatches = [];
 
-                        if (matches.length === 0) {
-                            const noMatchMessage = $('<li></li>').addClass('video-item').text(`No matches found for: ${teams.join(', ')}`);
-                            videoList.append(noMatchMessage);
-                            return;
-                        }
-
-                        matches.forEach(match => {
-                            const cleanedTitle = match.title.replace(/\.mp4$/, '');
-                            const listItem = $('<li></li>').addClass('video-item');
-                            const videoTitle = $('<div></div>').addClass('video-title').text(cleanedTitle);
-
-                            const iframe = $('<iframe></iframe>')
-                                .attr('src', `https://www.youtube.com/embed/${match.videoId}?start=${match.startTime}`)
-                                .attr('frameborder', '0')
-                                .attr('allowfullscreen', true);
-
-                            listItem.append(videoTitle, iframe);
-                            videoList.append(listItem);
+                    eventsData.forEach(event => {
+                        event.matches.forEach(match => {
+                            const redScoreAdjusted = match.scoreRedFinal - match.scoreBlueFoul;
+                            const blueScoreAdjusted = match.scoreBlueFinal - match.scoreRedFoul;
+                            const totalScore = Math.max(redScoreAdjusted, blueScoreAdjusted);
+                            
+                            topMatches.push({
+                                eventCode: event.eventCode,
+                                matchNumber: match.matchNumber,
+                                description: match.description,
+                                totalScore: totalScore,
+                                teams: match.teams,
+                                actualStartTime: match.actualStartTime
+                            });
                         });
                     });
-                }).fail(function() {
-                    console.error('Failed to fetch video data');
-                    const errorMessage = $('<div></div>').text('Failed to load best matches. Please try again later.');
-                    videoList.append(errorMessage);
-                });
-            }
 
-            function searchVideosByTeams(videosData, teams) {
-                const filteredVideos = [];
+                    topMatches.sort((a, b) => b.totalScore - a.totalScore);
+                    topMatches = topMatches.slice(0, 10); // Show top 10 matches
 
-                videosData.forEach(video => {
-                    video.ftc_matches.forEach(match => {
-                        const allTeams = [...match.red_teams, ...match.blue_teams];
-                        if (teams.every(team => allTeams.includes(team))) {
-                            filteredVideos.push({
-                                videoId: video.video_id,
-                                title: video.video_file.replace(/Query \d+:\s*/, ''),
-                                startTime: match.start_time
-                            });
-                        }
+                    if (topMatches.length === 0) {
+                        videoList.append('<li class="video-item">No top matches found.</li>');
+                        return;
+                    }
+
+                    $.getJSON('https://ftcvideos.pystem.com/list', function(videosData) {
+                        topMatches.forEach(match => {
+                            const teamNumbers = match.teams.map(team => team.teamNumber.toString());
+                            const matchingVideos = videosData.filter(video =>
+                                video.ftc_matches.some(videoMatch =>
+                                    teamNumbers.every(team => videoMatch.red_teams.includes(team) || videoMatch.blue_teams.includes(team))
+                                )
+                            );
+
+                            if (matchingVideos.length > 0) {
+                                const video = matchingVideos[0];
+                                const teamNumbersText = match.teams.map(team => team.teamNumber).join(', ');
+                                const videoTitle = $('<div></div>').addClass('video-title').text(`Match: ${match.description} - Teams: ${teamNumbersText} - Total Score: ${match.totalScore}`);
+                                const iframe = $('<iframe></iframe>')
+                                    .attr('src', `https://www.youtube.com/embed/${video.video_id}?start=${video.ftc_matches[0].start_time}`)
+                                    .attr('frameborder', '0')
+                                    .attr('allowfullscreen', true);
+                                const listItem = $('<li></li>').addClass('video-item').append(videoTitle, iframe);
+                                videoList.append(listItem);
+                            }
+                        });
+                    }).fail(function() {
+                        console.error('Failed to fetch video data');
                     });
+                }).fail(function() {
+                    console.error('Failed to fetch match data');
+                    videoList.append('<div>Failed to load top matches. Please try again later.</div>');
                 });
-
-                return filteredVideos;
             }
 
-            fetchAndRenderVideos();
+            fetchAndRenderTopMatches();
         });
     </script>
 </body>
