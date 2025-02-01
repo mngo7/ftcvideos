@@ -87,8 +87,7 @@
                         return;
                     }
 
-                    $.getJSON('https://ftcvideos.org
-                    // /list', function(videosData) {
+                    $.getJSON('https://ftcvideos.org/list', function(videosData) {
                         topMatches.forEach(match => {
                             const teamNumbers = match.teams.map(team => team.teamNumber.toString());
                             
