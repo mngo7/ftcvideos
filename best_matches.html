@@ -80,7 +80,7 @@
                     });
 
                     topMatches.sort((a, b) => b.totalScore - a.totalScore);
-                    topMatches = topMatches.slice(0, 10); // Show top 10 matches
+                    topMatches = topMatches.slice(0, 20);
 
                     if (topMatches.length === 0) {
                         videoList.append('<li class="video-item">No top matches found.</li>');
@@ -88,7 +88,9 @@
                     }
 
                     $.getJSON('https://ftcvideos.org/list', function(videosData) {
-                        topMatches.forEach(match => {
+                        var matchesFound = 0;
+                        for (let i = 0; i < topMatches.length; i++) {
+                            var match = topMatches[i];
                             const teamNumbers = match.teams.map(team => team.teamNumber.toString());
                             
                             let bestVideo = null;
@@ -113,8 +115,12 @@
                                     .attr('allowfullscreen', true);
                                 const listItem = $('<li></li>').addClass('video-item').append(videoTitle, iframe);
                                 videoList.append(listItem);
+                                matchesFound++;
+                                if (matchesFound === 10) {
+                                    break;
+                                }
                             }
-                        });
+                        }
                     }).fail(function() {
                         console.error('Failed to fetch video data');
                     });
