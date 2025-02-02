@@ -60,11 +60,10 @@
                 const videoList = $('#videoList');
                 const latestMatches = [];
 
-                // Extract the two latest tournaments
-                const latestTournaments = data.slice(0, 5); // Get the two latest tournaments
+                const latestTournaments = data.slice(0, 10);
 
                 latestTournaments.forEach(tournament => {
-                    const matches = tournament.ftc_matches.slice(0, 2); // Get the two latest matches of each tournament
+                    const matches = tournament.ftc_matches.slice(0, 1);
                     matches.forEach(match => {
                         const redTeams = match.red_teams.join(', ');
                         const blueTeams = match.blue_teams.join(', ');
