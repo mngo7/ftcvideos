@@ -50,9 +50,111 @@
     <div class="nav-button">
         <a href="index.html"><button class="search-button">Back to Home</button></a>
     </div>
+    <div class="search region">
+        <label>
+            <select name="selectregion" class="selectregion">
+                <option value="">All</option>
+                <option value=" "></option>
+                <option value="USAK">Alaska</option>
+                <option value="USAL">Alabama</option>
+                <option value="USAR">Arkansas</option>
+                <option value="USAZ">Arizona</option>
+                <option value="USCA">California</option>
+                <option value="USCALA">California - Los Angeles</option>
+                <option value="USCALS">California - LAUSD</option>
+                <option value="USCANO">California - Northern</option>
+                <option value="USCASD">California - San Diego</option>
+                <option value="USCHS">Chesapeake</option>
+                <option value="USCO">Colorado</option>
+                <option value="USCT">Connecticut</option>
+                <option value="USDE">Delaware</option>
+                <option value="USFL">Florida</option>
+                <option value="USGA">Georgia</option>
+                <option value="USHI">Hawaii</option>
+                <option value="USIA">Iowa</option>
+                <option value="USID">Idaho</option>
+                <option value="USIL">Illinois</option>
+                <option value="USIN">Indiana</option>
+                <option value="USKY">Kentucky</option>
+                <option value="USLA">Louisiana</option>
+                <option value="USMA">Massachusetts</option>
+                <option value="USMD">Maryland</option>
+                <option value="USMI">Michigan</option>
+                <option value="USMN">Minnesota</option>
+                <option value="USMOKS">Missouri & Kansas</option>
+                <option value="USMS">Mississippi</option>
+                <option value="USMT">Montana</option>
+                <option value="USNC">North Carolina</option>
+                <option value="USND">North Dakota</option>
+                <option value="USNE">Nebraska</option>
+                <option value="USNH">New Hampshire</option>
+                <option value="USNJ">New Jersey</option>
+                <option value="USNM">New Mexico</option>
+                <option value="USNV">Nevada</option>
+                <option value="USNY">New York</option>
+                <option value="USNYEX">New York - Excelsior</option>
+                <option value="USNYLI">New York - Long Island</option>
+                <option value="USNYNY">New York - NYC</option>
+                <option value="USOH">Ohio</option>
+                <option value="USOK">Oklahoma</option>
+                <option value="USOR">Oregon</option>
+                <option value="USPA">Pennsylvania</option>
+                <option value="USRI">Rhode Island</option>
+                <option value="USSC">South Carolina</option>
+                <option value="USTN">Tennessee</option>
+                <option value="USTX">Texas</option>
+                <option value="USTXCE">Texas - Central</option>
+                <option value="USTXHO">Texas - Houston</option>
+                <option value="USTXNO">Texas - North</option>
+                <option value="USTXSO">Texas - South</option>
+                <option value="USTXWP">Texas - West & Panhandle</option>
+                <option value="USUT">Utah</option>
+                <option value="USVA">Virginia</option>
+                <option value="USVT">Vermont</option>
+                <option value="USWA">Washington</option>
+                <option value="USWI">Wisconsin</option>
+                <option value="USWV">West Virginia</option>
+                <option value="USWY">Wyoming</option>
+                <option value=" "></option>
+                <option value="CAAB">Alberta</option>
+                <option value="CABC">British Columbia</option>
+                <option value="CAON">Ontario</option>
+                <option value="CAQC">Québec</option>
+                <option value=" "></option>
+                <option value="AU">Australia</option>
+                <option value="BR">Brazil</option>
+                <option value="CN">China</option>
+                <option value="CY">Cyprus</option>
+                <option value="DE">Germany</option>
+                <option value="EG">Egypt</option>
+                <option value="ES">Spain</option>
+                <option value="FR">France</option>
+                <option value="GB">Great Britain</option>
+                <option value="IL">Israel</option>
+                <option value="IN">India</option>
+                <option value="JM">Jamaica</option>
+                <option value="KR">South Korea</option>
+                <option value="KZ">Kazakhstan</option>
+                <option value="LY">Libya</option>
+                <option value="MX">Mexico</option>
+                <option value="NG">Nigeria</option>
+                <option value="NL">Netherlands</option>
+                <option value="NZ">New Zealand</option>
+                <option value="QA">Qatar</option>
+                <option value="RO">Romania</option>
+                <option value="RU">Russia</option>
+                <option value="SA">Saudi Arabia</option>
+                <option value="TH">Thailand</option>
+                <option value="TW">Taiwan</option>
+                <option value="ZA">South Africa</option>
+            </select>
+        </label>
+    </div>
+
     <ul class="video-list" id="videoList">
         <!-- Top matches will be dynamically loaded here -->
     </ul>
+
     <div><a target="_blank" href="/about.html">About</a></div>
 
     <script>
@@ -60,7 +162,14 @@
             const videoList = $('#videoList');
 
             function fetchAndRenderTopMatches() {
-                $.getJSON('https://ftcvideos.org/matches', function(eventsData) {
+                let searchRegion = $('.selectregion').val();
+                let jsonUrl = 'https://ftcvideos.org/matches';
+
+                if (searchRegion !== "") {
+                    jsonUrl = 'https://ftcvideos.org/matches?region=' + searchRegion;
+                }
+
+                $.getJSON(jsonUrl, function(eventsData) {
                     let topMatches = [];
 
                     eventsData.forEach(event => {
@@ -68,7 +177,7 @@
                             const redScoreAdjusted = match.scoreRedFinal - match.scoreBlueFoul;
                             const blueScoreAdjusted = match.scoreBlueFinal - match.scoreRedFoul;
                             const totalScore = Math.max(redScoreAdjusted, blueScoreAdjusted);
-                            
+
                             topMatches.push({
                                 eventCode: event.eventCode,
                                 matchNumber: match.matchNumber,
@@ -83,6 +192,8 @@
                     topMatches.sort((a, b) => b.totalScore - a.totalScore);
                     topMatches = topMatches.slice(0, 20);
 
+                    videoList.empty();
+
                     if (topMatches.length === 0) {
                         videoList.append('<li class="video-item">No top matches found.</li>');
                         return;
@@ -93,10 +204,10 @@
                         for (let i = 0; i < topMatches.length; i++) {
                             var match = topMatches[i];
                             const teamNumbers = match.teams.map(team => team.teamNumber.toString());
-                            
+
                             let bestVideo = null;
                             let bestMatch = null;
-                            
+
                             videosData.forEach(video => {
                                 video.ftc_matches.forEach(videoMatch => {
                                     const allTeams = [...videoMatch.red_teams, ...videoMatch.blue_teams];
@@ -106,7 +217,7 @@
                                     }
                                 });
                             });
-                            
+
                             if (bestVideo && bestMatch) {
                                 const teamNumbersText = match.teams.map(team => team.teamNumber).join(', ');
                                 const videoTitle = $('<div></div>').addClass('video-title').text(`Match: ${match.description} - Teams: ${teamNumbersText} - Total Score: ${match.totalScore}`);
@@ -130,6 +241,8 @@
                     videoList.append('<div>Failed to load top matches. Please try again later.</div>');
                 });
             }
+
+            $('.selectregion').on('change', fetchAndRenderTopMatches);
 
             fetchAndRenderTopMatches();
         });
