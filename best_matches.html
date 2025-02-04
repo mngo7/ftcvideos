@@ -51,7 +51,7 @@
         <a href="index.html"><button class="search-button">Back to Home</button></a>
     </div>
     <div class="search region">
-        <label>
+        Region: <label>
             <select name="selectregion" class="selectregion">
                 <option value="">All</option>
                 <option value=" "></option>
@@ -151,6 +151,15 @@
         </label>
     </div>
 
+    <div class="search auto">
+        Sort by: <label>
+            <select name="selectauto" class="selectauto">
+                <option value="total">Total Score</option>
+                <option value="auto">Auto Score</option>
+            </select>
+        </label>
+    </div>
+
     <ul class="video-list" id="videoList">
         <!-- Top matches will be dynamically loaded here -->
     </ul>
@@ -163,6 +172,7 @@
 
             function fetchAndRenderTopMatches() {
                 let searchRegion = $('.selectregion').val();
+                let searchAuto = $('.selectauto').val();
                 let jsonUrl = 'https://ftcvideos.org/matches';
 
                 if (searchRegion !== "") {
@@ -174,8 +184,12 @@
 
                     eventsData.forEach(event => {
                         event.matches.forEach(match => {
-                            const redScoreAdjusted = match.scoreRedFinal - match.scoreBlueFoul;
-                            const blueScoreAdjusted = match.scoreBlueFinal - match.scoreRedFoul;
+                            var redScoreAdjusted = match.scoreRedFinal - match.scoreBlueFoul;
+                            var blueScoreAdjusted = match.scoreBlueFinal - match.scoreRedFoul;
+                            if (searchAuto === 'auto') {
+                                redScoreAdjusted = match.scoreRedAuto;
+                                blueScoreAdjusted = match.scoreBlueAuto;
+                            }
                             const totalScore = Math.max(redScoreAdjusted, blueScoreAdjusted);
 
                             topMatches.push({
