@@ -234,7 +234,7 @@
 
                             if (bestVideo && bestMatch) {
                                 const teamNumbersText = match.teams.map(team => team.teamNumber).join(', ');
-                                const videoTitle = $('<div></div>').addClass('video-title').text(`Match: ${match.description} - Teams: ${teamNumbersText} - Total Score: ${match.totalScore}`);
+                                const videoTitle = $('<div></div>').addClass('video-title').text(`Match: ${match.description} - Teams: ${teamNumbersText} - Score: ${match.totalScore}`);
                                 const iframe = $('<iframe></iframe>')
                                     .attr('src', `https://www.youtube.com/embed/${bestVideo.video_id}?start=${bestMatch.start_time}`)
                                     .attr('frameborder', '0')
@@ -257,6 +257,7 @@
             }
 
             $('.selectregion').on('change', fetchAndRenderTopMatches);
+            $('.selectauto').on('change', fetchAndRenderTopMatches);
 
             fetchAndRenderTopMatches();
         });
