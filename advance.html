@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FTC World Championship Advancing Teams</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>FTC World Championship Advancing Teams</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Team Number</th>
+                <th>Advancement Criteria</th>
+                <th>Advanced From Event</th>
+            </tr>
+        </thead>
+        <tbody id="team-list">
+            <!-- Team rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // URL of the JSON data
+        const dataUrl = 'https://ftcvideos.org/events/advancement/FTCCMP1.json';
+
+        // Function to fetch and display the data
+        async function displayAdvancingTeams() {
+            try {
+                const response = await fetch(dataUrl);
+                const data = await response.json();
+
+                const teamList = document.getElementById('team-list');
+
+                data.forEach(event => {
+                    event.advancement.forEach(team => {
+                        const row = document.createElement('tr');
+
+                        const teamNumberCell = document.createElement('td');
+                        teamNumberCell.textContent = team.displayTeam;
+                        row.appendChild(teamNumberCell);
+
+                        const criteriaCell = document.createElement('td');
+                        criteriaCell.textContent = team.criteria;
+                        row.appendChild(criteriaCell);
+
+                        const eventCell = document.createElement('td');
+                        eventCell.textContent = event.advancedFrom;
+                        row.appendChild(eventCell);
+
+                        teamList.appendChild(row);
+                    });
+                });
+            } catch (error) {
+                console.error('Error fetching or parsing data:', error);
+            }
+        }
+
+        // Call the function to display the teams
+        displayAdvancingTeams();
+    </script>
+</body>
+</html>
