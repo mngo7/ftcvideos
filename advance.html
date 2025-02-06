@@ -61,7 +61,7 @@
                         const row = document.createElement('tr');
 
                         const teamNumberCell = document.createElement('td');
-                        teamNumberCell.textContent = team.displayTeam;
+                        teamNumberCell.innerHTML = `<a href="index.html?search=${team.team}&page=1">${team.team}</a>`;
                         row.appendChild(teamNumberCell);
 
                         const criteriaCell = document.createElement('td');
