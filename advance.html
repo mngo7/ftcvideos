@@ -64,8 +64,8 @@
                 const response = await fetch(dataUrl);
                 const data = await response.json();
 
-                const totalSlots = sum(event.slots for event in data);
-                const filledSlots = sum((event.advancement || []).length for event in data);
+                const totalSlots = data.reduce((sum, obj) => sum + obj.slots, 0);
+                const filledSlots = data.reduce((sum, obj) => sum + (obj.advancement || []).length, 0);
                 document.getElementById('message').innerText = `${filledSlots} out of ${totalSlots} slots filled`;
 
                 const teamList = document.getElementById('team-list');
