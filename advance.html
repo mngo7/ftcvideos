@@ -40,6 +40,7 @@
     <div class="nav-button">
         <a href="index.html"><button class="search-button">Back to Home</button></a>
     </div>
+    <div><p id="message"></p></div>
     <table>
         <thead>
             <tr>
@@ -62,6 +63,10 @@
             try {
                 const response = await fetch(dataUrl);
                 const data = await response.json();
+
+                const totalSlots = sum(event.slots for event in data);
+                const filledSlots = sum((event.advancement || []).length for event in data);
+                document.getElementById('message').innerText = `${filledSlots} out of ${totalSlots} slots filled`;
 
                 const teamList = document.getElementById('team-list');
 
