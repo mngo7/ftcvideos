@@ -173,10 +173,10 @@
             function fetchAndRenderTopMatches() {
                 let searchRegion = $('.selectregion').val();
                 let searchAuto = $('.selectauto').val();
-                let jsonUrl = 'https://ftcvideos.org/matches';
+                let jsonUrl = '/matches';
 
                 if (searchRegion !== "") {
-                    jsonUrl = 'https://ftcvideos.org/matches?region=' + searchRegion;
+                    jsonUrl = '/matches?region=' + searchRegion;
                 }
 
                 $.getJSON(jsonUrl, function(eventsData) {
@@ -213,7 +213,7 @@
                         return;
                     }
 
-                    $.getJSON('https://ftcvideos.org/list', function(videosData) {
+                    $.getJSON('/list', function(videosData) {
                         var matchesFound = 0;
                         for (let i = 0; i < topMatches.length; i++) {
                             var match = topMatches[i];
