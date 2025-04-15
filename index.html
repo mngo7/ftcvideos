@@ -2,126 +2,265 @@
 <html lang="en">
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-J4RS3MC3WS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-J4RS3MC3WS');
-</script>
-<link rel="icon" type="image/png" sizes="48x48" href="favicon.ico">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4RS3MC3WS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J4RS3MC3WS');
+    </script>
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FTC Match Videos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-bottom: 30px;
+        }
+
         h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .nav-button {
             text-align: center;
         }
+
+        .search-button {
+            padding: 12px 24px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .search-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .search-input {
+            padding: 12px;
+            width: 300px;
+            max-width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
         .video-list {
             list-style: none;
             padding: 0;
+            margin: 40px 0;
         }
+
         .video-item {
-            margin: 20px 0;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
         .video-title {
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.1em;
         }
+
         iframe {
-            width: 560px;
-            height: 315px;
+            width: 800px;
+            height: 450px;
             max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .search-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .search-input {
-            padding: 8px;
-            width: 300px;
-            margin-right: 10px;
-        }
-        .search-button {
-            padding: 8px 15px;
-        }
+
         .pagination {
             text-align: center;
-            margin: 20px 0;
+            margin: 30px 0;
         }
-        .pagination button {
-            padding: 5px 10px;
+
+        .page-button {
+            padding: 8px 16px;
             margin: 0 5px;
+            background-color: var(--light-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        .pagination button.active {
-            background-color: green;
+
+        .page-button:hover {
+            background-color: var(--secondary-color);
             color: white;
-            font-weight: bold;
-            border: none;
-            cursor: default;
         }
-        .nav-button {
-            text-align: center;
-            margin: 20px;
+
+        .page-button.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+        }
+
+        .about-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .about-link:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .nav-buttons {
+                gap: 10px;
+            }
+
+            .search-input {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            iframe {
+                height: 250px;
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>FTC Match Videos</h1>
-    <div class="nav-button">
-        <a href="latest_matches.html"><button class="search-button">View Latest Matches</button></a>
+    <div class="container">
+        <header>
+            <h1>FTC Match Videos</h1>
+        </header>
+
+        <div class="nav-buttons">
+            <div class="nav-button">
+                <a href="latest_matches.html"><button class="search-button">View Latest Matches</button></a>
+            </div>
+            <div class="nav-button">
+                <a href="best_matches.html"><button class="search-button">View Top Matches</button></a>
+            </div>
+            <div class="nav-button">
+                <a href="advance.html"><button class="search-button">View Teams Advanced to Worlds</button></a>
+            </div>
+            <div class="nav-button">
+                <a href="worldhighlights.html"><button class="search-button">2023-2024 World Highlights</button></a>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="teamOrVideoSearch" class="search-input" placeholder="Enter team numbers or video ID...">
+            <button id="searchButton" class="search-button">Search</button>
+        </div>
+
+        <div class="pagination" id="topPagination"></div>
+        <ul class="video-list" id="videoList">
+            <!-- Videos will be dynamically loaded here -->
+        </ul>
+        <div class="pagination" id="bottomPagination"></div>
+        
+        <div style="text-align: center;">
+            <a href="about.html" class="about-link">About</a>
+        </div>
     </div>
-    <div class="nav-button">
-        <a href="best_matches.html"><button class="search-button">View Top Matches</button></a>
-    </div>
-    <div class="nav-button">
-        <a href="advance.html"><button class="search-button">View Teams Advanced to Worlds</button></a>
-    </div>
-    <div class="search-container">
-        <input type="text" id="teamOrVideoSearch" class="search-input" placeholder="Enter team numbers or video ID...">
-        <button id="searchButton" class="search-button">Search</button>
-    </div>
-    <div class="pagination" id="topPagination"></div>
-    <ul class="video-list" id="videoList">
-        <!-- Videos will be dynamically loaded here -->
-    </ul>
-    <div class="pagination" id="bottomPagination"></div>
-    <div><a target="_blank" href="about.html">About</a></div>
 
     <script>
-        let videosData = [];
         let currentPage = 1;
         const videosPerPage = 5;
+        let videosData = [];
 
-        // Function to fetch and render video data
-        function fetchAndRenderVideos() {
+        // Function to fetch video data
+        function fetchVideos() {
             $.getJSON('/list', function(data) {
-                videosData = data; // Store data for reuse in search
-
-                // Check URL for parameters on load
+                videosData = data;
                 const urlParams = new URLSearchParams(window.location.search);
-                const searchParam = urlParams.get('search');
-                const pageParam = parseInt(urlParams.get('page')) || 1;
-
-                if (searchParam) {
-                    const searchInput = decodeURIComponent(searchParam);
-                    $('#teamOrVideoSearch').val(searchInput);
-                    currentPage = pageParam;
-                    renderVideos(searchInput);
+                const searchQuery = urlParams.get('search');
+                const page = parseInt(urlParams.get('page')) || 1;
+                currentPage = page;
+                
+                if (searchQuery) {
+                    document.getElementById('teamOrVideoSearch').value = searchQuery;
+                    renderVideos(searchQuery);
                 }
             }).fail(function() {
                 console.error('Failed to fetch video data');
             });
         }
 
-        // Function to render videos based on team numbers or video ID filter
+        // Function to render videos based on search input
         function renderVideos(searchInput) {
             const videoList = $('#videoList');
             videoList.empty(); // Clear current list
@@ -188,6 +327,7 @@
             const endIndex = startIndex + videosPerPage;
             const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
 
+            // Render paginated videos
             paginatedVideos.forEach(video => {
                 const listItem = $('<li></li>').addClass('video-item');
                 const title = $('<div></div>').addClass('video-title').text(video.title);
@@ -201,20 +341,14 @@
                 videoList.append(listItem);
             });
 
-            if (videoList.children().length === 0) {
-                const noResults = $('<div></div>').text('No videos found for the entered search.');
-                videoList.append(noResults);
-            }
-
+            // Render pagination
             renderPagination(totalPages);
         }
 
-        // Function to render pagination controls
+        // Function to render pagination
         function renderPagination(totalPages) {
-            const paginationTop = $('#topPagination');
-            const paginationBottom = $('#bottomPagination');
-            paginationTop.empty();
-            paginationBottom.empty();
+            const pagination = $('#topPagination, #bottomPagination');
+            pagination.empty();
 
             if (totalPages > 1) {
                 for (let i = 1; i <= totalPages; i++) {
@@ -224,27 +358,36 @@
                         .toggleClass('active', i === currentPage)
                         .on('click', function() {
                             currentPage = i;
-                            const searchInput = $('#teamOrVideoSearch').val().trim();
+                            const searchInput = document.getElementById('teamOrVideoSearch').value;
                             renderVideos(searchInput);
                         });
 
-                    paginationTop.append(button.clone(true));
-                    paginationBottom.append(button);
+                    pagination.append(button);
                 }
             }
         }
 
         // Event listener for search button
-        $(document).on('click', '#searchButton', function() {
-            const searchInput = $('#teamOrVideoSearch').val().trim();
-            currentPage = 1; // Reset to first page on new search
+        $('#searchButton').on('click', function() {
+            const searchInput = $('#teamOrVideoSearch').val();
+            currentPage = 1;
             renderVideos(searchInput);
         });
 
-        // Load videos when the page loads
+        // Event listener for Enter key in search input
+        $('#teamOrVideoSearch').on('keypress', function(e) {
+            if (e.which === 13) {
+                const searchInput = $(this).val();
+                currentPage = 1;
+                renderVideos(searchInput);
+            }
+        });
+
+        // Fetch videos when the page loads
         $(document).ready(function() {
-            fetchAndRenderVideos();
+            fetchVideos();
         });
     </script>
 </body>
 </html>
+

@@ -14,40 +14,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About FTC Videos</title>
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            padding: 0;
+            margin: 0;
         }
+
         .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
         }
-        h1, h2 {
-            color: #222;
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-bottom: 30px;
         }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 30px 0 20px;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 25px 0 15px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
         a {
-            color: #007BFF;
+            color: var(--secondary-color);
             text-decoration: none;
+            transition: color 0.3s;
         }
+
         a:hover {
+            color: var(--primary-color);
             text-decoration: underline;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 30px 0;
+        }
+
+        .nav-button {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .search-button {
+            padding: 12px 24px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            h3 {
+                font-size: 1.2em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>About Us</h1>
-        <p><strong><a href="index.html">FTC Videos</a></strong> is a site dedicated to aggregating and organizing educational and match-related videos for the <strong>FIRST Tech Challenge</strong> community. We created it to provide an easily accessible and centralized resource for teams, mentors, and enthusiasts looking to learn from past competitions, strategies, and technical tutorials.</p>
+        <header>
+            <h1>About Us</h1>
+        </header>
+
+        <div class="nav-button">
+            <a href="index.html"><button class="search-button">Back to Home</button></a>
+        </div>
+
+        <p>FTC Videos is a site dedicated to aggregating and organizing educational and match-related videos for the <strong>FIRST Tech Challenge</strong> community. We created it to provide an easily accessible and centralized resource for teams, mentors, and enthusiasts looking to learn from past competitions, strategies, and technical tutorials.</p>
         
         <p>At its core, FTC Videos allows users to efficiently browse and watch videos by season, event, and team. Whether you're looking for match footage, robot design inspiration, programming tutorials, or strategy breakdowns, our platform makes it simple to find relevant content. Our goal is to make learning and research for FTC more convenient and accessible to everyone in the community.</p>
         
-        <p>FTC Videos is used by teams worldwide, whether they’re preparing for their first league event or fine-tuning their strategy for the World Championship. We hope this platform helps you in your FTC journey!</p>
+        <p>FTC Videos is used by teams worldwide, whether they're preparing for their first league event or fine-tuning their strategy for the World Championship. We hope this platform helps you in your FTC journey!</p>
         
         <h2>Acknowledgements</h2>
         <p>FTC Videos is designed and maintained by <strong>Rick Zhou</strong> and <strong>Kevin Zhou</strong> from FTC team <strong>21229 Quality Control</strong>, with contributions from the FTC community. The site is built using various open-source libraries and tools, and we appreciate the support from teams who contribute and share their knowledge.</p>

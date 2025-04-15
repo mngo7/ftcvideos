@@ -2,169 +2,287 @@
 <html lang="en">
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-J4RS3MC3WS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-J4RS3MC3WS');
-</script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4RS3MC3WS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J4RS3MC3WS');
+    </script>
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Scoring FTC Matches</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-bottom: 30px;
+        }
+
         h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .nav-button {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .search-button {
+            padding: 12px 24px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .search {
+            margin: 20px 0;
             text-align: center;
         }
+
+        select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin: 0 10px;
+            font-size: 1em;
+        }
+
         .video-list {
             list-style: none;
             padding: 0;
+            margin: 40px 0;
         }
+
         .video-item {
-            margin: 20px 0;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
         .video-title {
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.1em;
         }
+
         iframe {
-            width: 560px;
-            height: 315px;
+            width: 800px;
+            height: 450px;
             max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .nav-button {
-            text-align: center;
-            margin: 20px;
+
+        .about-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .about-link:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            iframe {
+                height: 250px;
+            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Top Scoring FTC Matches</h1>
-    <div class="nav-button">
-        <a href="index.html"><button class="search-button">Back to Home</button></a>
-    </div>
-    <div class="search region">
-        Region: <label>
-            <select name="selectregion" class="selectregion">
-                <option value="">All</option>
-                <option value=" "></option>
-                <option value="USAK">Alaska</option>
-                <option value="USAL">Alabama</option>
-                <option value="USAR">Arkansas</option>
-                <option value="USAZ">Arizona</option>
-                <option value="USCA">California</option>
-                <option value="USCALA">California - Los Angeles</option>
-                <option value="USCALS">California - LAUSD</option>
-                <option value="USCANO">California - Northern</option>
-                <option value="USCASD">California - San Diego</option>
-                <option value="USCHS">Chesapeake</option>
-                <option value="USCO">Colorado</option>
-                <option value="USCT">Connecticut</option>
-                <option value="USDE">Delaware</option>
-                <option value="USFL">Florida</option>
-                <option value="USGA">Georgia</option>
-                <option value="USHI">Hawaii</option>
-                <option value="USIA">Iowa</option>
-                <option value="USID">Idaho</option>
-                <option value="USIL">Illinois</option>
-                <option value="USIN">Indiana</option>
-                <option value="USKY">Kentucky</option>
-                <option value="USLA">Louisiana</option>
-                <option value="USMA">Massachusetts</option>
-                <option value="USMD">Maryland</option>
-                <option value="USMI">Michigan</option>
-                <option value="USMN">Minnesota</option>
-                <option value="USMOKS">Missouri & Kansas</option>
-                <option value="USMS">Mississippi</option>
-                <option value="USMT">Montana</option>
-                <option value="USNC">North Carolina</option>
-                <option value="USND">North Dakota</option>
-                <option value="USNE">Nebraska</option>
-                <option value="USNH">New Hampshire</option>
-                <option value="USNJ">New Jersey</option>
-                <option value="USNM">New Mexico</option>
-                <option value="USNV">Nevada</option>
-                <option value="USNY">New York</option>
-                <option value="USNYEX">New York - Excelsior</option>
-                <option value="USNYLI">New York - Long Island</option>
-                <option value="USNYNY">New York - NYC</option>
-                <option value="USOH">Ohio</option>
-                <option value="USOK">Oklahoma</option>
-                <option value="USOR">Oregon</option>
-                <option value="USPA">Pennsylvania</option>
-                <option value="USRI">Rhode Island</option>
-                <option value="USSC">South Carolina</option>
-                <option value="USTN">Tennessee</option>
-                <option value="USTX">Texas</option>
-                <option value="USTXCE">Texas - Central</option>
-                <option value="USTXHO">Texas - Houston</option>
-                <option value="USTXNO">Texas - North</option>
-                <option value="USTXSO">Texas - South</option>
-                <option value="USTXWP">Texas - West & Panhandle</option>
-                <option value="USUT">Utah</option>
-                <option value="USVA">Virginia</option>
-                <option value="USVT">Vermont</option>
-                <option value="USWA">Washington</option>
-                <option value="USWI">Wisconsin</option>
-                <option value="USWV">West Virginia</option>
-                <option value="USWY">Wyoming</option>
-                <option value=" "></option>
-                <option value="CAAB">Alberta</option>
-                <option value="CABC">British Columbia</option>
-                <option value="CAON">Ontario</option>
-                <option value="CAQC">Québec</option>
-                <option value=" "></option>
-                <option value="AU">Australia</option>
-                <option value="BR">Brazil</option>
-                <option value="CN">China</option>
-                <option value="CY">Cyprus</option>
-                <option value="DE">Germany</option>
-                <option value="EG">Egypt</option>
-                <option value="ES">Spain</option>
-                <option value="FR">France</option>
-                <option value="GB">Great Britain</option>
-                <option value="IL">Israel</option>
-                <option value="IN">India</option>
-                <option value="JM">Jamaica</option>
-                <option value="KR">South Korea</option>
-                <option value="KZ">Kazakhstan</option>
-                <option value="LY">Libya</option>
-                <option value="MX">Mexico</option>
-                <option value="NG">Nigeria</option>
-                <option value="NL">Netherlands</option>
-                <option value="NZ">New Zealand</option>
-                <option value="QA">Qatar</option>
-                <option value="RO">Romania</option>
-                <option value="RU">Russia</option>
-                <option value="SA">Saudi Arabia</option>
-                <option value="TH">Thailand</option>
-                <option value="TW">Taiwan</option>
-                <option value="ZA">South Africa</option>
-            </select>
-        </label>
-    </div>
+    <div class="container">
+        <header>
+            <h1>Top Scoring FTC Matches</h1>
+        </header>
 
-    <div class="search auto">
-        Sort by: <label>
-            <select name="selectauto" class="selectauto">
-                <option value="total">Total Score</option>
-                <option value="auto">Auto Score</option>
-            </select>
-        </label>
+        <div class="nav-button">
+            <a href="index.html"><button class="search-button">Back to Home</button></a>
+        </div>
+
+        <div class="search region">
+            Region: <label>
+                <select name="selectregion" class="selectregion">
+                    <option value="">All</option>
+                    <option value=" "></option>
+                    <option value="USAK">Alaska</option>
+                    <option value="USAL">Alabama</option>
+                    <option value="USAR">Arkansas</option>
+                    <option value="USAZ">Arizona</option>
+                    <option value="USCA">California</option>
+                    <option value="USCALA">California - Los Angeles</option>
+                    <option value="USCALS">California - LAUSD</option>
+                    <option value="USCANO">California - Northern</option>
+                    <option value="USCASD">California - San Diego</option>
+                    <option value="USCHS">Chesapeake</option>
+                    <option value="USCO">Colorado</option>
+                    <option value="USCT">Connecticut</option>
+                    <option value="USDE">Delaware</option>
+                    <option value="USFL">Florida</option>
+                    <option value="USGA">Georgia</option>
+                    <option value="USHI">Hawaii</option>
+                    <option value="USIA">Iowa</option>
+                    <option value="USID">Idaho</option>
+                    <option value="USIL">Illinois</option>
+                    <option value="USIN">Indiana</option>
+                    <option value="USKY">Kentucky</option>
+                    <option value="USLA">Louisiana</option>
+                    <option value="USMA">Massachusetts</option>
+                    <option value="USMD">Maryland</option>
+                    <option value="USMI">Michigan</option>
+                    <option value="USMN">Minnesota</option>
+                    <option value="USMOKS">Missouri & Kansas</option>
+                    <option value="USMS">Mississippi</option>
+                    <option value="USMT">Montana</option>
+                    <option value="USNC">North Carolina</option>
+                    <option value="USND">North Dakota</option>
+                    <option value="USNE">Nebraska</option>
+                    <option value="USNH">New Hampshire</option>
+                    <option value="USNJ">New Jersey</option>
+                    <option value="USNM">New Mexico</option>
+                    <option value="USNV">Nevada</option>
+                    <option value="USNY">New York</option>
+                    <option value="USNYEX">New York - Excelsior</option>
+                    <option value="USNYLI">New York - Long Island</option>
+                    <option value="USNYNY">New York - NYC</option>
+                    <option value="USOH">Ohio</option>
+                    <option value="USOK">Oklahoma</option>
+                    <option value="USOR">Oregon</option>
+                    <option value="USPA">Pennsylvania</option>
+                    <option value="USRI">Rhode Island</option>
+                    <option value="USSC">South Carolina</option>
+                    <option value="USTN">Tennessee</option>
+                    <option value="USTX">Texas</option>
+                    <option value="USTXCE">Texas - Central</option>
+                    <option value="USTXHO">Texas - Houston</option>
+                    <option value="USTXNO">Texas - North</option>
+                    <option value="USTXSO">Texas - South</option>
+                    <option value="USTXWP">Texas - West & Panhandle</option>
+                    <option value="USUT">Utah</option>
+                    <option value="USVA">Virginia</option>
+                    <option value="USVT">Vermont</option>
+                    <option value="USWA">Washington</option>
+                    <option value="USWI">Wisconsin</option>
+                    <option value="USWV">West Virginia</option>
+                    <option value="USWY">Wyoming</option>
+                    <option value=" "></option>
+                    <option value="CAAB">Alberta</option>
+                    <option value="CABC">British Columbia</option>
+                    <option value="CAON">Ontario</option>
+                    <option value="CAQC">Québec</option>
+                    <option value=" "></option>
+                    <option value="AU">Australia</option>
+                    <option value="BR">Brazil</option>
+                    <option value="CN">China</option>
+                    <option value="CY">Cyprus</option>
+                    <option value="DE">Germany</option>
+                    <option value="EG">Egypt</option>
+                    <option value="ES">Spain</option>
+                    <option value="FR">France</option>
+                    <option value="GB">Great Britain</option>
+                    <option value="IL">Israel</option>
+                    <option value="IN">India</option>
+                    <option value="JM">Jamaica</option>
+                    <option value="KR">South Korea</option>
+                    <option value="KZ">Kazakhstan</option>
+                    <option value="LY">Libya</option>
+                    <option value="MX">Mexico</option>
+                    <option value="NG">Nigeria</option>
+                    <option value="NL">Netherlands</option>
+                    <option value="NZ">New Zealand</option>
+                    <option value="QA">Qatar</option>
+                    <option value="RO">Romania</option>
+                    <option value="RU">Russia</option>
+                    <option value="SA">Saudi Arabia</option>
+                    <option value="TH">Thailand</option>
+                    <option value="TW">Taiwan</option>
+                    <option value="ZA">South Africa</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="search auto">
+            Sort by: <label>
+                <select name="selectauto" class="selectauto">
+                    <option value="total">Total Score</option>
+                    <option value="auto">Auto Score</option>
+                </select>
+            </label>
+        </div>
+
+        <ul class="video-list" id="videoList">
+            <!-- Top matches will be dynamically loaded here -->
+        </ul>
+
+        <div style="text-align: center;">
+            <a href="about.html" class="about-link">About</a>
+        </div>
     </div>
-
-    <ul class="video-list" id="videoList">
-        <!-- Top matches will be dynamically loaded here -->
-    </ul>
-
-    <div><a target="_blank" href="about.html">About</a></div>
 
     <script>
         $(document).ready(function() {
