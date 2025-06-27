@@ -158,6 +158,24 @@
             margin-bottom: 15px;
         }
 
+        .video-title h2 {
+            text-align: center;
+            margin: 20px 0 10px;
+            color: var(--primary-color);
+            font-size: 1.8em;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .video-title h2::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary-color);
+            margin: 10px auto;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -188,8 +206,18 @@
         </div>
 
         <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/Tcp11hnSiO0" frameborder="0" allowfullscreen></iframe>
-            <iframe src="https://www.youtube.com/embed/zLL5HE54O5g" frameborder="0" allowfullscreen></iframe>
+            <div class="video-title">
+                <h2>2024-2025 Worlds Highlights</h2>
+            </div>
+            <iframe src="https://www.youtube.com/embed/xgssegVJuxA" frameborder="0" allowfullscreen title="2024-2025 Worlds Highlights"></iframe>
+            <div class="video-title">
+                <h2>2023-2024 Worlds Highlights</h2>
+            </div>
+            <iframe src="https://www.youtube.com/embed/Tcp11hnSiO0" frameborder="0" allowfullscreen title="2023-2024 Worlds Highlights"></iframe>
+            <div class="video-title">
+                <h2>2023-2024 Worlds Volunteers</h2>
+            </div>
+            <iframe src="https://www.youtube.com/embed/zLL5HE54O5g" frameborder="0" allowfullscreen title="2023-2024 Worlds Volunteers"></iframe>
         </div>
 
         <h2>Photo Albums 2024-2025</h2>
@@ -215,4 +243,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>
