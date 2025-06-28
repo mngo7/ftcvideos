@@ -117,14 +117,6 @@
             font-size: 1.1em;
         }
 
-        iframe {
-            width: 800px;
-            height: 450px;
-            max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
         .about-link {
             display: inline-block;
             margin-top: 30px;
@@ -147,13 +139,11 @@
             h1 {
                 font-size: 2em;
             }
-
-            iframe {
-                height: 250px;
-            }
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="render_video.js"></script>
 </head>
 <body>
     <div class="container">
@@ -352,13 +342,13 @@
 
                             if (bestVideo && bestMatch) {
                                 const teamNumbersText = match.teams.map(team => team.teamNumber).join(', ');
-                                const videoTitle = $('<div></div>').addClass('video-title').text(`Match: ${match.description} - Teams: ${teamNumbersText} - Score: ${match.totalScore}`);
-                                const iframe = $('<iframe></iframe>')
-                                    .attr('src', `https://www.youtube.com/embed/${bestVideo.video_id}?start=${bestMatch.start_time}`)
-                                    .attr('frameborder', '0')
-                                    .attr('allowfullscreen', true);
-                                const listItem = $('<li></li>').addClass('video-item').append(videoTitle, iframe);
-                                videoList.append(listItem);
+                                const videoData = {
+                                    title: `Match: ${match.description} - Teams: ${teamNumbersText} - Score: ${match.totalScore}`,
+                                    videoId: bestVideo.video_id,
+                                    startTime: bestMatch.start_time,
+                                    endTime: bestMatch.end_time
+                                };
+                                renderYouTubeVideo('#videoList', videoData, matchesFound);
                                 matchesFound++;
                                 if (matchesFound === 10) {
                                     break;

@@ -126,14 +126,6 @@
             font-size: 1.1em;
         }
 
-        iframe {
-            width: 800px;
-            height: 450px;
-            max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
         .pagination {
             text-align: center;
             margin: 30px 0;
@@ -289,7 +281,8 @@
                         filteredVideos.push({
                             title,
                             videoId: video.video_id,
-                            startTime: match.start_time
+                            startTime: match.start_time,
+                            endTime: match.end_time
                         });
                     });
                 }
@@ -313,7 +306,8 @@
                             filteredVideos.push({
                                 title: titleWithTeams,
                                 videoId: video.video_id,
-                                startTime: match.start_time
+                                startTime: match.start_time,
+                                endTime: match.end_time
                             });
                         });
                     }
@@ -331,18 +325,9 @@
             const endIndex = startIndex + videosPerPage;
             const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
 
-            // Render paginated videos
-            paginatedVideos.forEach(video => {
-                const listItem = $('<li></li>').addClass('video-item');
-                const title = $('<div></div>').addClass('video-title').text(video.title);
-
-                const iframe = $('<iframe></iframe>')
-                    .attr('src', `https://www.youtube.com/embed/${video.videoId}?start=${video.startTime}`)
-                    .attr('frameborder', '0')
-                    .attr('allowfullscreen', true);
-
-                listItem.append(title, iframe);
-                videoList.append(listItem);
+            // Use renderYouTubeVideo for each video
+            paginatedVideos.forEach((video, idx) => {
+                renderYouTubeVideo('#videoList', video, idx);
             });
 
             // Render pagination
@@ -392,6 +377,8 @@
             fetchVideos();
         });
     </script>
+    <script src="/website/render_video.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
 
