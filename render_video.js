@@ -3,12 +3,15 @@
 // Usage: renderYouTubeVideo(container, { videoId, startTime, endTime, title })
 
 function renderYouTubeVideo(container, videoData, idx = 0) {
-    const { videoId, startTime, endTime, title } = videoData;
+    let { videoId, startTime, endTime, title } = videoData;
+    if (endTime && startTime) {
+        endTime = Math.max(endTime, startTime + 170); // Ensure endTime is at least 160 seconds after startTime
+    }
     const playerDivId = `yt-player-${idx}`;
     const progressId = `yt-progress-${idx}`;
     const timeId = `yt-time-${idx}`;
     const playPauseBtnId = `yt-playpause-${idx}`;
-    const segmentLength = (endTime !== undefined && startTime !== undefined && !isNaN(endTime) && !isNaN(startTime)) ? Math.max(160, endTime - startTime) : 160;
+    const segmentLength =  endTime - startTime;
 
     const listItem = $('<li></li>').addClass('video-item');
     const titleDiv = $('<div></div>').addClass('video-title').text(title || '');
