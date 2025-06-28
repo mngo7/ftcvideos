@@ -8,7 +8,7 @@ function renderYouTubeVideo(container, videoData, idx = 0) {
     const progressId = `yt-progress-${idx}`;
     const timeId = `yt-time-${idx}`;
     const playPauseBtnId = `yt-playpause-${idx}`;
-    const segmentLength = (endTime !== undefined && startTime !== undefined && !isNaN(endTime) && !isNaN(startTime)) ? Math.max(1, endTime - startTime) : 120;
+    const segmentLength = (endTime !== undefined && startTime !== undefined && !isNaN(endTime) && !isNaN(startTime)) ? Math.max(160, endTime - startTime) : 160;
 
     const listItem = $('<li></li>').addClass('video-item');
     const titleDiv = $('<div></div>').addClass('video-title').text(title || '');
