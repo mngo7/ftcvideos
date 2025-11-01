@@ -215,6 +215,11 @@
 
         <div class="search-container">
             <input type="text" id="teamOrVideoSearch" class="search-input" placeholder="Enter team numbers or video ID...">
+            <select id="seasonSelect" class="search-input" style="width:160px; display:inline-block; margin-left:8px;">
+                <option value="">All seasons</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+            </select>
             <button id="searchButton" class="search-button">Search</button>
         </div>
 
@@ -236,7 +241,9 @@
 
         // Function to fetch video data
         function fetchVideos() {
-            $.getJSON('/list', function(data) {
+            const season = $('#seasonSelect').val();
+            const url = season ? `/list?season=${encodeURIComponent(season)}` : '/list';
+            $.getJSON(url, function(data) {
                 videosData = data;
                 const urlParams = new URLSearchParams(window.location.search);
                 const searchQuery = urlParams.get('search');
@@ -371,6 +378,15 @@
         // Fetch videos when the page loads
         $(document).ready(function() {
             fetchVideos();
+        });
+
+        // Re-fetch when season changes and re-run current search if present
+        $('#seasonSelect').on('change', function() {
+            fetchVideos();
+            const searchInput = $('#teamOrVideoSearch').val();
+            if (searchInput) {
+                renderVideos(searchInput);
+            }
         });
     </script>
     <script src="/website/render_video.js"></script>

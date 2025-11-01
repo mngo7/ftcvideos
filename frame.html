@@ -224,13 +224,15 @@
 
         // Function to fetch video data
         function fetchVideos() {
-            $.getJSON('/list', function(data) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const season = urlParams.get('season') || '';
+            const listUrl = season ? `/list?season=${encodeURIComponent(season)}` : '/list';
+            $.getJSON(listUrl, function(data) {
                 videosData = data;
-                const urlParams = new URLSearchParams(window.location.search);
                 const searchQuery = urlParams.get('search');
                 const page = parseInt(urlParams.get('page')) || 1;
                 currentPage = page;
-                
+
                 if (searchQuery) {
                     document.getElementById('teamOrVideoSearch').value = searchQuery;
                     renderVideos(searchQuery);
@@ -296,8 +298,13 @@
                 });
             }
 
-            // Update URL with the search query and page number
-            const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchInput)}&page=${currentPage}`;
+            // Preserve season query param when updating URL
+            const currentParams = new URLSearchParams(window.location.search);
+            const season = currentParams.get('season') || '';
+            let newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchInput)}&page=${currentPage}`;
+            if (season) {
+                newUrl += `&season=${encodeURIComponent(season)}`;
+            }
             window.history.pushState(null, '', newUrl);
 
             // Paginate results
@@ -312,8 +319,11 @@
                 const listItem = $('<li></li>').addClass('video-item');
                 const title = $('<div></div>').addClass('video-title').text(video.title);
 
+                const currentParams = new URLSearchParams(window.location.search);
+                const seasonParam = currentParams.get('season') || '';
+                const seasonSuffix = seasonParam ? `&season=${encodeURIComponent(seasonParam)}` : '';
                 const iframe = $('<iframe></iframe>')
-                    .attr('src', `https://www.youtube.com/embed/${video.videoId}?start=${video.startTime}`)
+                    .attr('src', `https://www.youtube.com/embed/${video.videoId}?start=${video.startTime}${seasonSuffix}`)
                     .attr('frameborder', '0')
                     .attr('allowfullscreen', true);
 
