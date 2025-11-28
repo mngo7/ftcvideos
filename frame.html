@@ -201,21 +201,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="container">
         <div class="search-container" hidden>
             <input type="text" id="teamOrVideoSearch" class="search-input" placeholder="Enter team numbers or video ID...">
             <button id="searchButton" class="search-button">Search</button>
         </div>
-        <div class="pagination" id="topPagination"></div>
+        <div class="pagination" id="topPagination" hidden></div>
         <ul class="video-list" id="videoList">
             <!-- Videos will be dynamically loaded here -->
         </ul>
-        <div class="pagination" id="bottomPagination"></div>
-        
-        <div style="text-align: center;">
-            <a href="about.html" class="about-link">About</a>
-        </div>
-    </div>
+        <div class="pagination" id="bottomPagination" hidden></div>
 
     <script>
         let currentPage = 1;
@@ -316,9 +310,6 @@
 
             // Render paginated videos
             paginatedVideos.forEach(video => {
-                const listItem = $('<li></li>').addClass('video-item');
-                const title = $('<div></div>').addClass('video-title').text(video.title);
-
                 const currentParams = new URLSearchParams(window.location.search);
                 const seasonParam = currentParams.get('season') || '';
                 const seasonSuffix = seasonParam ? `&season=${encodeURIComponent(seasonParam)}` : '';
@@ -327,8 +318,7 @@
                     .attr('frameborder', '0')
                     .attr('allowfullscreen', true);
 
-                listItem.append(title, iframe);
-                videoList.append(listItem);
+                videoList.append(iframe);
             });
 
             // Render pagination
