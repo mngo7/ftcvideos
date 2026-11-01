@@ -286,6 +286,10 @@
     <script>
         $(document).ready(function() {
             const videoList = $('#videoList');
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('season')) {
+                $('#seasonSelect').val(urlParams.get('season'));
+            }
 
             function fetchAndRenderTopMatches() {
                 let searchRegion = $('.selectregion').val();
@@ -331,7 +335,7 @@
                     videoList.empty();
 
                     if (topMatches.length === 0) {
-                        videoList.append('<li class="video-item">No top matches found.</li>');
+                        videoList.append(`<li class="video-item">No ${season} matches found yet.</li>`);
                         return;
                     }
 
@@ -369,6 +373,9 @@
                                     break;
                                 }
                             }
+                        }
+                        if (matchesFound === 0) {
+                            videoList.append(`<li class="video-item">No videos of the top ${season} matches yet.</li>`);
                         }
                     }).fail(function() {
                         console.error('Failed to fetch video data');
