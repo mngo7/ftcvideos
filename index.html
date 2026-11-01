@@ -241,21 +241,22 @@
         let currentPage = 1;
         const videosPerPage = 5;
         let videosData = [];
+        let videosLoaded = false;
 
-        // Function to fetch video data
+        // Function to fetch video data of the selected season, then re-run the current search
         function fetchVideos() {
             const season = $('#seasonSelect').val();
             const url = season ? `/list?season=${encodeURIComponent(season)}` : '/list';
+            videosLoaded = false;
             $.getJSON(url, function(data) {
+                if (season !== $('#seasonSelect').val()) {
+                    return; // season changed while loading
+                }
                 videosData = data;
-                const urlParams = new URLSearchParams(window.location.search);
-                const searchQuery = urlParams.get('search');
-                const page = parseInt(urlParams.get('page')) || 1;
-                currentPage = page;
-                
-                if (searchQuery) {
-                    document.getElementById('teamOrVideoSearch').value = searchQuery;
-                    renderVideos(searchQuery);
+                videosLoaded = true;
+                const searchInput = $('#teamOrVideoSearch').val();
+                if (searchInput) {
+                    renderVideos(searchInput);
                 }
             }).fail(function() {
                 console.error('Failed to fetch video data');
@@ -266,6 +267,11 @@
         function renderVideos(searchInput) {
             const videoList = $('#videoList');
             videoList.empty(); // Clear current list
+
+            if (searchInput && !videosLoaded) {
+                videoList.append($('<div></div>').text('Loading videos...'));
+                return; // rendered again when the season's videos are loaded
+            }
 
             if (!searchInput) {
                 const message = $('<div></div>').text('Please enter team numbers or a video ID to view videos.');
@@ -321,7 +327,9 @@
             }
 
             // Update URL with the search query and page number
-            const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchInput)}&page=${currentPage}`;
+            const season = $('#seasonSelect').val();
+            const seasonParam = season ? `&season=${encodeURIComponent(season)}` : '';
+            const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchInput)}&page=${currentPage}${seasonParam}`;
             window.history.pushState(null, '', newUrl);
 
             // Paginate results
@@ -378,17 +386,26 @@
             }
         });
 
-        // Fetch videos when the page loads
+        // Restore search, page and season from the URL, then fetch videos when the page loads
         $(document).ready(function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('season')) {
+                $('#seasonSelect').val(urlParams.get('season'));
+            }
+            if (urlParams.get('search')) {
+                $('#teamOrVideoSearch').val(urlParams.get('search'));
+                currentPage = parseInt(urlParams.get('page')) || 1;
+            }
             fetchVideos();
         });
 
-        // Re-fetch when season changes and re-run current search if present
+        // Re-fetch when season changes; the current search is re-run once loaded
         $('#seasonSelect').on('change', function() {
+            currentPage = 1;
             fetchVideos();
             const searchInput = $('#teamOrVideoSearch').val();
             if (searchInput) {
-                renderVideos(searchInput);
+                renderVideos(searchInput); // shows loading until the new season's videos arrive
             }
         });
     </script>
