@@ -153,9 +153,13 @@
 
     <script>
         $(document).ready(function() {
-            $.getJSON('/list', function(data) {
+            // Only the current season's videos
+            $.getJSON('/list?season=current', function(data) {
                 const videoList = $('#videoList');
                 const latestMatches = [];
+                if (data.length === 0) {
+                    videoList.append('<li>No matches of this season yet.</li>');
+                }
 
                 const latestTournaments = data.slice(0, 10);
 
