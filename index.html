@@ -209,6 +209,9 @@
                 <a href="advance.html"><button class="search-button">View Teams Advanced to Worlds</button></a>
             </div>
             <div class="nav-button">
+                <a href="robots.html"><button class="search-button">View Robots</button></a>
+            </div>
+            <div class="nav-button">
                 <a href="worldhighlights.html"><button class="search-button">FTC World Highlights</button></a>
             </div>
         </div>
@@ -338,6 +341,10 @@
             const startIndex = (currentPage - 1) * videosPerPage;
             const endIndex = startIndex + videosPerPage;
             const paginatedVideos = filteredVideos.slice(startIndex, endIndex);
+
+            if (currentPage === 1 && /^\d+$/.test(searchInput)) {
+                renderTeamRobot('#videoList', searchInput);
+            }
 
             // Use renderYouTubeVideo for each video
             paginatedVideos.forEach((video, idx) => {

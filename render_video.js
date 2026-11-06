@@ -2,6 +2,63 @@
 // This module provides a function to render a YouTube video with a custom progress bar, play/pause button, and timestamp.
 // Usage: renderYouTubeVideo(container, { videoId, startTime, endTime, title })
 
+// Robot GIFs of a season, by team. Pages with a season dropdown follow it.
+const robotsBySeason = {};
+
+function loadRobots() {
+    const season = $('#seasonSelect').val() || '';
+    if (!robotsBySeason[season]) {
+        robotsBySeason[season] = $.getJSON(`/robots?season=${encodeURIComponent(season)}`).then(robots => {
+            const byTeam = {};
+            robots.forEach(robot => { byTeam[robot.team] = robot; });
+            return byTeam;
+        });
+    }
+    return robotsBySeason[season];
+}
+
+function robotLink(robot, className) {
+    const link = $('<a></a>').addClass(className).attr('href', `index.html?search=${robot.team}`);
+    const image = $('<img>').attr({src: `/robot/${robot.season}/${robot.team}.gif`, alt: `Robot of team ${robot.team}`, loading: 'lazy'});
+    return link.append(image, $('<span></span>').text(robot.team));
+}
+
+// Shows the robots of a match below its video, teams are listed red alliance first
+function renderMatchRobots(listItem, title) {
+    const listed = (title || '').match(/(?:Red:|Teams:)(.*)$/);
+    if (!listed) {
+        return;
+    }
+    const teams = (listed[1].match(/\b\d{1,5}\b/g) || []).slice(0, 4);
+    loadRobots().then(robots => {
+        const row = $('<div></div>').css({display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '10px 0 0 0'});
+        teams.forEach((team, i) => {
+            if (robots[team]) {
+                row.append(robotLink(robots[team], 'match-robot').css({
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', width: '96px', fontSize: '0.8em',
+                    textDecoration: 'none', color: 'inherit', borderBottom: `3px solid ${i < 2 ? '#e74c3c' : '#3498db'}`,
+                }));
+            }
+        });
+        row.find('img').css({width: '96px', height: '96px'});
+        if (row.children().length) {
+            listItem.append(row);
+        }
+    });
+}
+
+// Shows a team's robot above its search results
+function renderTeamRobot(container, team) {
+    loadRobots().then(robots => {
+        if (robots[team]) {
+            const item = $('<li></li>').addClass('video-item').css({textAlign: 'center'});
+            item.append(robotLink(robots[team], 'team-robot').css({display: 'inline-flex', flexDirection: 'column', alignItems: 'center', fontWeight: 'bold', textDecoration: 'none', color: 'inherit'}));
+            item.find('img').css({width: '200px', height: '200px', maxWidth: '100%'});
+            $(container).prepend(item);
+        }
+    });
+}
+
 function renderYouTubeVideo(container, videoData, idx = 0) {
     let { videoId, startTime, endTime, title } = videoData;
     if (endTime && startTime) {
@@ -23,6 +80,7 @@ function renderYouTubeVideo(container, videoData, idx = 0) {
     progressBarWrapper.append(playPauseBtn, progressBar, timeDisplay);
     listItem.append(titleDiv, playerDiv, progressBarWrapper);
     $(container).append(listItem);
+    renderMatchRobots(listItem, title);
 
     let isPlaying = false;
     let playerInstance = null;
