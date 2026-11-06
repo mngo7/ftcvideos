@@ -19,7 +19,7 @@ function loadRobots() {
 
 function robotLink(robot, className) {
     const link = $('<a></a>').addClass(className).attr('href', `index.html?search=${robot.team}`);
-    const image = $('<img>').attr({src: `/robot/${robot.season}/${robot.team}.gif`, alt: `Robot of team ${robot.team}`, loading: 'lazy'});
+    const image = $('<img>').attr({src: `/robot/${robot.season}/${robot.team}.gif?v=${robot.version}`, alt: `Robot of team ${robot.team}`, loading: 'lazy'});
     return link.append(image, $('<span></span>').text(robot.team));
 }
 
