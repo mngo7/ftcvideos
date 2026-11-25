@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTC Match Video</title>
+    <!--
+    The video of one match, for other sites to show in an iframe. Takes the parameters of /api/v1/match:
+      season, event, level (qual, playoff, practice), series, number   or   season, teams, red
+    e.g. <iframe src="https://ftcvideos.org/embed/match.html?season=2025&event=USWASAM1&level=qual&number=2"
+                 style="width:100%;aspect-ratio:16/10;border:0" allow="autoplay; encrypted-media"></iframe>
+    The player fills the iframe, its controls and the link to FTCVideos take 36px below the video.
+    -->
+    <style>
+        :root {
+            --text: #333;
+            --muted: #777;
+            --background: #fff;
+            --link: #3498db;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text: #ddd;
+                --muted: #999;
+                --background: #111;
+                --link: #6cb4ee;
+            }
+        }
+        html, body {
+            margin: 0;
+            height: 100%;
+            background: var(--background);
+            color: var(--text);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 14px;
+            overflow: hidden;
+        }
+        #videoList {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        /* the player of render_video.js, made to fill the frame */
+        .video-item {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .video-item .video-title {
+            display: none;
+        }
+        .video-item iframe, .video-item > div:nth-child(2) {
+            flex: 1;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0;
+            max-width: none !important;
+            border: 0;
+        }
+        .video-item > div:last-child {
+            width: 100% !important;
+            max-width: none !important;
+            height: 36px;
+            margin: 0 !important;
+            padding: 0 8px;
+            box-sizing: border-box;
+        }
+        .video-item button {
+            margin-right: 4px !important;
+            min-width: 56px;
+        }
+        .video-item input[type=range] {
+            margin: 0 8px !important;
+            min-width: 0;
+        }
+        .credit {
+            margin-left: 8px;
+            color: var(--link);
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 12px;
+        }
+        .credit:hover {
+            text-decoration: underline;
+        }
+        .empty {
+            display: flex;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--muted);
+            padding: 0 16px;
+        }
+        .empty a {
+            color: var(--link);
+            margin-left: 0.3em;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <ul id="videoList"></ul>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        let ytReady = false;
+        let pending = null;
+
+        function onYouTubeIframeAPIReady() {
+            ytReady = true;
+            if (pending) {
+                pending();
+            }
+        }
+
+        function credit(url) {
+            return $('<a class="credit" target="_blank" rel="noopener"></a>').attr('href', url).text('FTCVideos.org');
+        }
+
+        function showEmpty(text) {
+            const empty = $('<div class="empty"></div>').append($('<span></span>').text(text + ' '));
+            empty.append($('<a target="_blank" rel="noopener">FTCVideos.org</a>').attr('href', 'https://ftcvideos.org'));
+            $('#videoList').replaceWith(empty);
+        }
+
+        $.getJSON('/api/v1/match?' + params.toString(), function(match) {
+            if (!match || !match.video) {
+                showEmpty('No video of this match yet.');
+                return;
+            }
+            const render = () => {
+                renderYouTubeVideo('#videoList', {
+                    videoId: match.video.youtubeId,
+                    startTime: match.video.start,
+                    endTime: match.video.end,
+                    title: ''
+                }, 0);
+                $('.video-item > div:last-child').append(credit(match.pageUrl || 'https://ftcvideos.org'));
+            };
+            if (ytReady) {
+                render();
+            } else {
+                pending = render;
+            }
+        }).fail(function() {
+            showEmpty('The video could not be loaded.');
+        });
+    </script>
+    <script src="/render_video.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>

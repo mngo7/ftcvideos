@@ -73,9 +73,11 @@ let playerCount = 0;
 function renderYouTubeVideo(container, videoData, idx = 0) {
     const { videoId, title } = videoData;
     const segStart = Math.floor(videoData.startTime || 0);
+    // A video without end is the video of one match, e.g. FIRST's own, and plays to its end
+    const wholeVideo = videoData.endTime === null;
     const clipLength = (videoData.endTime || 0) - segStart;
-    const segmentLength = Math.min(Math.max(clipLength, MIN_SEGMENT), MAX_SEGMENT);
-    const segEnd = segStart + segmentLength;
+    let segmentLength = Math.min(Math.max(clipLength, MIN_SEGMENT), MAX_SEGMENT);
+    let segEnd = segStart + segmentLength;
 
     // A new id each time, so that a re-rendered list never reuses the id of a removed player
     const playerDivId = `yt-player-${idx}-${playerCount++}`;
@@ -139,6 +141,12 @@ function renderYouTubeVideo(container, videoData, idx = 0) {
         },
         events: {
             'onReady': function() {
+                if (wholeVideo && player.getDuration() > segStart) {
+                    segmentLength = Math.floor(player.getDuration()) - segStart;
+                    segEnd = segStart + segmentLength;
+                    progressBar.attr('max', segmentLength);
+                    showTime(0);
+                }
                 playPauseBtn.prop('disabled', false);
                 interval = setInterval(update, 250);
             },
