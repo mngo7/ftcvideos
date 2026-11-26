@@ -153,6 +153,11 @@
         .robot-view img, .robot-view video { width: 100%; border-radius: 6px; background: #111; display: block; }
         .robot-view .note { font-size: .8em; color: var(--muted); margin-top: 4px; }
         #splat { width: 100%; aspect-ratio: 1; border-radius: 6px; background: #111; display: block; }
+        .robot-view .no-model {
+            display: flex; align-items: center; justify-content: center; aspect-ratio: 1; padding: 24px;
+            border-radius: 6px; background: #121214; color: #b8bcc4; font-size: .95em; line-height: 1.5;
+        }
+        .robot-view .no-model b { color: #e8eaed; }
         .robot-view .toggle {
             margin-top: 6px; padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 4px;
             background: white; color: var(--secondary-color); cursor: pointer; font-size: .85em;
@@ -270,6 +275,16 @@
         function robotView(v) {
             const view = $('#robotView').empty();
             const robot = v.robot || {};
+            const message = {
+                failed: '<b>No 3D model</b><br>Not enough data in this video to make a 3D model: ' +
+                        'it does not show the robot from enough angles.',
+                pending: '<b>3D model upcoming</b><br>FTCVideos is making a 3D model of this robot from the video. ' +
+                         'Check back later.',
+            }[v.robotStatus];
+            if (message) {
+                view.append(`<div class="no-model"><div>${message}</div></div>`);
+                return;
+            }
             if (!robot.splat && !robot.orbit && !robot.animation) return;
             const video = robot.orbit ? `<video src="${esc(robot.orbit)}" autoplay loop muted playsinline></video>`
                 : `<img src="${esc(robot.animation)}" alt="Robot of team ${esc(v.team)}">`;

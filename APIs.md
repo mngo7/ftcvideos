@@ -73,7 +73,9 @@ Please credit FUN when you show them; `credit` says how.
                  "robot": {"animation": ".../robot.webp", "poster": ".../robot.jpg", "orbit": ".../orbit.mp4",
                            "splat": ".../robot.splat", "view": ".../robot.json"}}]}
 
-`robot` is what FTCVideos made of the video (`null` until it is made, see `docs/behind-the-bot.md`): an
+`robotStatus` is `done`, `pending` (not made yet), `hidden` (taken down), or `failed`: the video does not show the robot from
+enough angles to make a model, so there will be none. `robot` is what FTCVideos made of the video (`null`
+unless done, see `docs/behind-the-bot.md`): an
 animated WebP of the robot turning, a still, the same as an MP4, and a 3D Gaussian splat in the `.splat`
 format with the view to start it from. The page `/behind-the-bot` shows them all.
 
