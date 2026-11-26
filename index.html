@@ -191,6 +191,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/seasons.js"></script>
 </head>
 <body>
     <div class="container">
@@ -221,11 +222,7 @@
 
         <div class="search-container">
             <input type="text" id="teamOrVideoSearch" class="search-input" placeholder="Enter team numbers or video ID...">
-            <select id="seasonSelect" class="search-input" style="width:160px; display:inline-block; margin-left:8px;">
-                <option value="">All seasons</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
+            <select id="seasonSelect" class="search-input" aria-label="Season" style="width:160px; display:inline-block; margin-left:8px;">
             </select>
             <button id="searchButton" class="search-button">Search</button>
         </div>
@@ -334,7 +331,7 @@
 
             // Update URL with the search query and page number
             const season = $('#seasonSelect').val();
-            const seasonParam = season ? `&season=${encodeURIComponent(season)}` : '';
+            const seasonParam = `&season=${encodeURIComponent(Seasons.param(season))}`;
             const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchInput)}&page=${currentPage}${seasonParam}`;
             window.history.pushState(null, '', newUrl);
 
@@ -399,9 +396,9 @@
         // Restore search, page and season from the URL, then fetch videos when the page loads
         $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('season')) {
-                $('#seasonSelect').val(urlParams.get('season'));
-            }
+            // the current season by default, "All seasons" is season=all
+            Seasons.fill('#seasonSelect', {first: 2024, all: true});
+            Seasons.select('#seasonSelect', urlParams);
             if (urlParams.get('search')) {
                 $('#teamOrVideoSearch').val(urlParams.get('search'));
                 currentPage = parseInt(urlParams.get('page')) || 1;
@@ -412,6 +409,7 @@
         // Re-fetch when season changes; the current search is re-run once loaded
         $('#seasonSelect').on('change', function() {
             currentPage = 1;
+            Seasons.remember($(this).val());
             fetchVideos();
             const searchInput = $('#teamOrVideoSearch').val();
             if (searchInput) {

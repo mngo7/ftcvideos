@@ -148,6 +148,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/seasons.js"></script>
 </head>
 <body>
     <div class="container">
@@ -162,8 +163,6 @@
         <div style="display:inline-block; margin-left:12px;">
             <label for="seasonSelect">Season:</label>
             <select id="seasonSelect" style="padding:8px; margin-left:8px;">
-                <option value="2025">2025</option>
-                <option value="2026" selected>2026</option>
             </select>
         </div>
 
@@ -184,9 +183,9 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('season')) {
-            $('#seasonSelect').val(urlParams.get('season'));
-        }
+        // the current season by default
+        Seasons.fill('#seasonSelect', {first: 2025});
+        Seasons.select('#seasonSelect', urlParams);
 
         // Function to fetch and display the data
         async function displayAdvancingTeams() {
@@ -237,7 +236,10 @@
 
         // Call the function to display the teams, and again when season changes
         displayAdvancingTeams();
-        $('#seasonSelect').on('change', displayAdvancingTeams);
+        $('#seasonSelect').on('change', function() {
+            Seasons.remember($(this).val());
+            displayAdvancingTeams();
+        });
     </script>
 </body>
 </html>

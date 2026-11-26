@@ -165,6 +165,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/seasons.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="render_video.js"></script>
 </head>
@@ -180,7 +181,6 @@
 
         <div class="robot-tools">
             <select id="seasonSelect" aria-label="Season">
-                <option value="2026">2026</option>
             </select>
             <input id="robotFilter" type="search" placeholder="Team number" aria-label="Team number">
         </div>
@@ -195,6 +195,9 @@
     <script>
         $(document).ready(function() {
             let shown = [];
+            // the current season by default
+            Seasons.fill('#seasonSelect', {first: 2025});
+            Seasons.select('#seasonSelect');
 
             function render() {
                 const filter = $('#robotFilter').val().trim();
@@ -215,7 +218,10 @@
             }
 
             $('#robotFilter').on('input', render);
-            $('#seasonSelect').on('change', load);
+            $('#seasonSelect').on('change', function() {
+                Seasons.remember($(this).val());
+                load();
+            });
             load();
         });
     </script>

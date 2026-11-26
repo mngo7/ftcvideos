@@ -170,6 +170,7 @@
         {"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/seasons.js"></script>
 </head>
 <body>
     <div class="container">
@@ -201,7 +202,7 @@
         </div>
 
         <div class="tools">
-            <select id="seasonSelect" aria-label="Season"><option value="">All seasons</option></select>
+            <select id="seasonSelect" aria-label="Season"></select>
             <input id="filter" type="search" placeholder="Team number or name" aria-label="Team number or name">
         </div>
         <p class="count" id="count"></p>
@@ -320,9 +321,10 @@
             if (params.get('team')) $('#filter').val(params.get('team'));
             fetch('/api/v1/behindthebot').then(r => r.json()).then(data => {
                 videos = data.videos;
-                const seasons = [...new Set(videos.map(v => v.season).filter(Boolean))].sort((a, b) => b - a);
-                seasons.forEach(s => $('#seasonSelect').append(`<option value="${s}">${esc(seasonLabel({season: s}))}</option>`));
-                if (params.get('season')) $('#seasonSelect').val(params.get('season'));
+                // the seasons that have videos, the current one first and by default
+                Seasons.fill('#seasonSelect', {all: true, seasons: videos.map(v => v.season),
+                                               label: s => seasonLabel({season: s})});
+                Seasons.select('#seasonSelect', params);
                 render();
                 if (params.get('v')) select(params.get('v'), false);
             });
@@ -334,7 +336,10 @@
                 img.attr('src', img.data('still'));
             });
             $('#filter').on('input', render);
-            $('#seasonSelect').on('change', render);
+            $('#seasonSelect').on('change', function() {
+                Seasons.remember($(this).val());
+                render();
+            });
             $('#grid').on('click', '.card', function(e) {
                 e.preventDefault();
                 const id = $(this).data('id');

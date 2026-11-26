@@ -199,6 +199,7 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/seasons.js"></script>
 </head>
 <body>
         <div class="search-container" hidden>
@@ -219,7 +220,8 @@
         // Function to fetch video data
         function fetchVideos() {
             const urlParams = new URLSearchParams(window.location.search);
-            const season = urlParams.get('season') || '';
+            // the current season by default, season=all for all of them
+            const season = Seasons.fromUrl(urlParams);
             const listUrl = season ? `/list?season=${encodeURIComponent(season)}` : '/list';
             $.getJSON(listUrl, function(data) {
                 videosData = data;

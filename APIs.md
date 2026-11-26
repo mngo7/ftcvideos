@@ -159,7 +159,8 @@ Embeds the videos of all matches of some teams in your website. To show one matc
 
 Query parameters
 - `search` (required) - comma-separated team numbers (e.g. `21229,4054,6427,7732`), or a YouTube video id.
-- `season` (optional) - the season (e.g. `2025`).
+- `season` (optional) - the season (e.g. `2025` for 2025-26). The current season when left out;
+  `all` for every season.
 
 Example
 
