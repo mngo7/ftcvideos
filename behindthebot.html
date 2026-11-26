@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4RS3MC3WS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-J4RS3MC3WS');
+    </script>
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behind the Bot</title>
+    <meta name="description" content="FTC robots up close: the Behind the Bot interviews of the FUN Robotics Network.">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --muted: #666;
+            --light-gray: #f5f5f5;
+            --border-color: #e0e0e0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.5em; margin-bottom: 6px; font-weight: 600; }
+        header p { opacity: .9; }
+
+        .credit {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px 14px;
+            padding: 12px 16px;
+            margin: 0 0 16px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 6px;
+            background: #fffaf9;
+            text-align: center;
+        }
+
+        .credit a { color: var(--accent-color); font-weight: 600; }
+
+        .nav-button { text-align: center; margin: 16px 0; }
+
+        .search-button {
+            padding: 12px 24px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .search-button:hover { background-color: var(--primary-color); }
+
+        .tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .tools input, .tools select { padding: 8px 12px; font-size: 1em; }
+
+        .count { text-align: center; color: var(--muted); font-size: .9em; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            background: var(--light-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            color: var(--text-color);
+            text-decoration: none;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .card:hover, .card:focus-visible { border-color: var(--secondary-color); outline: none; }
+        .card.selected { border-color: var(--accent-color); }
+
+        .card .media { position: relative; aspect-ratio: 16 / 9; background: #222; }
+        .card .media { overflow: hidden; }
+        .card .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .card .media img[data-animation] { object-fit: contain; background: #121214; }
+        .card .badge {
+            position: absolute; right: 6px; bottom: 6px;
+            background: rgba(0,0,0,.75); color: white; font-size: .75em; padding: 1px 6px; border-radius: 3px;
+        }
+        .card .badge.robot { left: 6px; right: auto; background: var(--accent-color); }
+
+        .card .info { padding: 8px 10px 10px; }
+        .card .team { font-weight: 700; color: var(--primary-color); }
+        .card .meta { font-size: .85em; color: var(--muted); }
+
+        #player {
+            display: none;
+            margin: 10px 0 24px;
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--light-gray);
+        }
+
+        #player h2 { font-size: 1.3em; color: var(--primary-color); margin-bottom: 4px; }
+        #player .links { font-size: .95em; margin-bottom: 12px; }
+        #player .links a { color: var(--secondary-color); margin-right: 14px; }
+
+        .stage { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start; }
+        .stage .yt { position: relative; aspect-ratio: 16 / 9; }
+        .stage .yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 6px; }
+
+        .robot-view { text-align: center; }
+        .robot-view img, .robot-view video { width: 100%; border-radius: 6px; background: #111; display: block; }
+        .robot-view .note { font-size: .8em; color: var(--muted); margin-top: 4px; }
+        #splat { width: 100%; aspect-ratio: 1; border-radius: 6px; background: #111; display: block; }
+        .robot-view .toggle {
+            margin-top: 6px; padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 4px;
+            background: white; color: var(--secondary-color); cursor: pointer; font-size: .85em;
+        }
+
+        .about-link { display: inline-block; margin-top: 30px; color: var(--secondary-color); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .container { padding: 10px 16px; }
+            h1 { font-size: 2em; }
+            .stage { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script type="importmap">
+        {"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Behind the Bot</h1>
+            <p>FTC robots up close, explained by the teams that built them</p>
+        </header>
+
+        <div class="credit">
+            <span>These videos are made by the
+                <a href="https://www.youtube.com/@FUNRoboticsNetwork" target="_blank" rel="noopener">FUN Robotics Network</a>
+                (FIRST Updates Now), in its <b>Behind the Bot</b> series.</span>
+            <span>Watch them on <a href="https://www.youtube.com/@FUNRoboticsNetwork" target="_blank" rel="noopener">their YouTube channel</a>
+                and support their work.</span>
+        </div>
+
+        <div class="nav-button">
+            <a href="index.html"><button class="search-button">Back to Home</button></a>
+            <a href="robots.html"><button class="search-button">View Robots</button></a>
+        </div>
+
+        <div id="player">
+            <h2 id="playerTitle"></h2>
+            <div class="links" id="playerLinks"></div>
+            <div class="stage">
+                <div class="yt" id="yt"></div>
+                <div class="robot-view" id="robotView"></div>
+            </div>
+        </div>
+
+        <div class="tools">
+            <select id="seasonSelect" aria-label="Season"><option value="">All seasons</option></select>
+            <input id="filter" type="search" placeholder="Team number or name" aria-label="Team number or name">
+        </div>
+        <p class="count" id="count"></p>
+
+        <div class="grid" id="grid"></div>
+
+        <div style="text-align: center;">
+            <a href="about.html" class="about-link">About</a>
+        </div>
+    </div>
+
+    <script>
+        const GAMES = {2019: 'SKYSTONE', 2020: 'ULTIMATE GOAL', 2021: 'FREIGHT FRENZY', 2022: 'POWERPLAY',
+                       2023: 'CENTERSTAGE', 2024: 'INTO THE DEEP', 2025: 'DECODE', 2026: 'BIOBUZZ'};
+        let videos = [];
+
+        function esc(text) {
+            return $('<div>').text(text == null ? '' : String(text)).html();
+        }
+
+        function minutes(seconds) {
+            return seconds ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}` : '';
+        }
+
+        function seasonLabel(v) {
+            return v.season ? `${v.season}-${String(v.season + 1).slice(2)} ${GAMES[v.season] || ''}` : '';
+        }
+
+        function card(v) {
+            // the still of the robot, its animation while the pointer is on the card
+            const robot = v.robot && (v.robot.poster || v.robot.animation);
+            const img = robot || v.thumbnail;
+            const moving = v.robot && v.robot.animation ? ` data-animation="${esc(v.robot.animation)}"` : '';
+            const name = v.team ? `${v.team} ${v.teamName || ''}` : v.title;
+            return $(`<a class="card" href="?v=${esc(v.id)}" data-id="${esc(v.id)}">
+                <div class="media"><img loading="lazy" alt="" src="${esc(img)}" data-still="${esc(img)}"${moving}>
+                    ${robot ? '<span class="badge robot">Robot</span>' : ''}
+                    <span class="badge">${minutes(v.duration)}</span></div>
+                <div class="info"><div class="team">${esc(name)}</div>
+                    <div class="meta">${esc(seasonLabel(v))}</div></div></a>`);
+        }
+
+        function matching() {
+            const season = $('#seasonSelect').val();
+            const words = $('#filter').val().trim().toLowerCase();
+            return videos.filter(v => (!season || String(v.season) === season) &&
+                (!words || `${v.team || ''} ${v.teamName} ${v.title}`.toLowerCase().includes(words)));
+        }
+
+        function render() {
+            const shown = matching();
+            const grid = $('#grid').empty();
+            shown.forEach(v => grid.append(card(v)));
+            $('#count').text(`${shown.length} of ${videos.length} videos`);
+            if (!shown.length) grid.append('<p>No videos found.</p>');
+            markSelected();
+        }
+
+        function markSelected() {
+            const id = new URLSearchParams(location.search).get('v');
+            $('.card').removeClass('selected');
+            if (id) $(`.card[data-id="${CSS.escape(id)}"]`).addClass('selected');
+        }
+
+        function robotView(v) {
+            const view = $('#robotView').empty();
+            const robot = v.robot || {};
+            if (!robot.splat && !robot.orbit && !robot.animation) return;
+            const video = robot.orbit ? `<video src="${esc(robot.orbit)}" autoplay loop muted playsinline></video>`
+                : `<img src="${esc(robot.animation)}" alt="Robot of team ${esc(v.team)}">`;
+            const showVideo = () => {
+                $('#robotStage').html(video);
+                $('#robotNote').text('The robot, rebuilt in 3D from the video');
+                $('#robotToggle').text('Turn it yourself in 3D').toggle(!!robot.splat).off('click').on('click', show3d);
+            };
+            const show3d = () => {
+                $('#robotStage').html('<canvas id="splat"></canvas>');
+                $('#robotNote').text('Drag to turn the robot, scroll to zoom. Rebuilt in 3D from the video.');
+                $('#robotToggle').text('Show the animation').toggle(!!(robot.orbit || robot.animation))
+                    .off('click').on('click', showVideo);
+                import('./splat_viewer.js')
+                    .then(m => m.show(document.getElementById('splat'), robot.splat, robot.view))
+                    .catch(showVideo);
+            };
+            view.append('<div id="robotStage"></div><div class="note" id="robotNote"></div>' +
+                        '<button type="button" class="toggle" id="robotToggle"></button>' +
+                        '<div class="note">3D model and animation by FTCVideos.org, from the footage of the FUN Robotics Network</div>');
+            if (robot.splat) show3d(); else showVideo();
+        }
+
+        function play(v, scroll) {
+            $('#player').show();
+            const name = v.team ? `${v.team} ${v.teamName || ''}` : '';
+            $('#playerTitle').text(v.title);
+            const links = [`<a href="${esc(v.url)}" target="_blank" rel="noopener">Watch on YouTube (FUN Robotics Network)</a>`];
+            if (v.team) {
+                links.push(`<a href="index.html?search=${encodeURIComponent(v.team)}&season=${v.season}">Matches of ${esc(v.team)}</a>`);
+                links.push(`<a href="?team=${encodeURIComponent(v.team)}">All videos of ${esc(name.trim())}</a>`);
+            }
+            $('#playerLinks').html(links.join(''));
+            $('#yt').html(`<iframe src="https://www.youtube.com/embed/${encodeURIComponent(v.id)}?rel=0"
+                title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`);
+            robotView(v);
+            document.title = name ? `Behind the Bot: ${name}` : 'Behind the Bot';
+            if (scroll) document.getElementById('player').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function select(id, scroll) {
+            const v = videos.find(x => x.id === id);
+            if (v) play(v, scroll);
+            markSelected();
+        }
+
+        $(document).ready(function() {
+            const params = new URLSearchParams(location.search);
+            if (params.get('team')) $('#filter').val(params.get('team'));
+            fetch('/api/v1/behindthebot').then(r => r.json()).then(data => {
+                videos = data.videos;
+                const seasons = [...new Set(videos.map(v => v.season).filter(Boolean))].sort((a, b) => b - a);
+                seasons.forEach(s => $('#seasonSelect').append(`<option value="${s}">${esc(seasonLabel({season: s}))}</option>`));
+                if (params.get('season')) $('#seasonSelect').val(params.get('season'));
+                render();
+                if (params.get('v')) select(params.get('v'), false);
+            });
+            $('#grid').on('mouseenter', '.card', function() {
+                const img = $(this).find('img[data-animation]');
+                img.attr('src', img.data('animation'));
+            }).on('mouseleave', '.card', function() {
+                const img = $(this).find('img[data-animation]');
+                img.attr('src', img.data('still'));
+            });
+            $('#filter').on('input', render);
+            $('#seasonSelect').on('change', render);
+            $('#grid').on('click', '.card', function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                const params = new URLSearchParams(location.search);
+                params.set('v', id);
+                history.pushState(null, '', '?' + params);
+                select(id, true);
+            });
+            window.addEventListener('popstate', () => {
+                const id = new URLSearchParams(location.search).get('v');
+                if (id) select(id, false); else { $('#player').hide(); $('#yt').empty(); markSelected(); }
+            });
+        });
+    </script>
+</body>
+</html>

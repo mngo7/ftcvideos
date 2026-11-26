@@ -45,7 +45,8 @@ One match, `null` when there is no video of it.
 The matches of an event that have a video, in the order they were played: `{"season", "event", "matches": [...]}`.
 
 ### GET /api/v1/team?season=&team=
-The matches of a team that have a video, and its robot GIF: `{"season", "team", "robot", "matches": [...]}`.
+The matches of a team that have a video, its robot GIF and its Behind the Bot videos:
+`{"season", "team", "robot", "behindTheBot": [...], "matches": [...]}`.
 
 ### GET /api/v1/video?season=&id=
 The matches in a YouTube video, by their time in it: `{"season", "youtubeId", "matches": [...]}`.
@@ -57,6 +58,24 @@ The robot GIF of a team, `null` when there is none:
      "pageUrl": "https://ftcvideos.org/index.html?search=10084&season=2025"}
 
 Show it as a link to its page: `<a href="{pageUrl}"><img src="{gif}" alt="Robot of team 10084"></a>`.
+
+### GET /api/v1/behindthebot?team=&season=
+The Behind the Bot videos of the [FUN Robotics Network](https://www.youtube.com/@FUNRoboticsNetwork), in
+which a team shows its robot up close. All of them by default, else the ones of `team` and `season`.
+Please credit FUN when you show them; `credit` says how.
+
+    {"credit": {"name": "FUN Robotics Network", "url": "https://www.youtube.com/@FUNRoboticsNetwork",
+                "series": "Behind the Bot", "site": "https://funroboticsnetwork.com"},
+     "videos": [{"id": "277rmvv6BQg", "title": "10084 Team Calamari | Behind the Bot | FTC DECODE Robot",
+                 "team": 10084, "teamName": "Team Calamari", "season": 2025, "game": "decode",
+                 "duration": 879, "uploadDate": "20260514", "url": "https://www.youtube.com/watch?v=277rmvv6BQg",
+                 "thumbnail": "https://i.ytimg.com/vi/277rmvv6BQg/hqdefault.jpg",
+                 "robot": {"animation": ".../robot.webp", "poster": ".../robot.jpg", "orbit": ".../orbit.mp4",
+                           "splat": ".../robot.splat", "view": ".../robot.json"}}]}
+
+`robot` is what FTCVideos made of the video (`null` until it is made, see `docs/behind-the-bot.md`): an
+animated WebP of the robot turning, a still, the same as an MP4, and a 3D Gaussian splat in the `.splat`
+format with the view to start it from. The page `/behind-the-bot` shows them all.
 
 ### /embed/match.html
 The video of one match in the FTCVideos player, for an iframe. Takes the match parameters above, and
